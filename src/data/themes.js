@@ -28,11 +28,11 @@ export const themes = {
             ],
             [
                 "mange",
-                "court après",
-                "danse avec",
+                "poursuit",
+                "rencontre",
                 "cherche",
                 "découvre",
-                "rêve d'",
+                "imagine",
             ],
             [
                 "une grosse pomme rouge",
@@ -75,7 +75,7 @@ export const themes = {
                 "La tortue patiente",
                 "Le papillon coloré",
             ],
-            ["observe", "poursuit", "cherche", "rencontre", "appelle", "guide"],
+            ["observe", "poursuit", "cherche", "rencontre", "regarde", "guide"],
             [
                 "une coccinelle rouge",
                 "un poisson argenté",
