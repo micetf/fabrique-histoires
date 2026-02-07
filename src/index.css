@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50;
+        @apply min-h-screen;
+        @apply font-sans;
+    }
+}
+
+/* Animation flip book - Rotation horizontale réaliste */
+@keyframes pageFlip {
+    0% {
+        transform: perspective(600px) rotateX(-90deg);
+        transform-origin: center top;
+        opacity: 0;
+    }
+    30% {
+        transform: perspective(600px) rotateX(-30deg);
+        opacity: 0.5;
+    }
+    100% {
+        transform: perspective(600px) rotateX(0deg);
+        transform-origin: center top;
+        opacity: 1;
+    }
+}
+
+.animate-flip-in {
+    animation: pageFlip 0.5s ease-out;
+}
+
+@layer utilities {
+    .text-shadow {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+}

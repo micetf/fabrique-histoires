@@ -1,0 +1,295 @@
+/**
+ * Bibliothèque de thèmes prédéfinis pour la Fabrique à Histoires
+ * Chaque thème contient 5 bandes avec 6 segments minimum
+ * La ponctuation finale est ajoutée automatiquement
+ */
+
+export const themes = {
+    default: {
+        id: "default",
+        name: "Classique",
+        icon: "🎨",
+        description: "Le thème original avec des histoires variées",
+        bands: [
+            [
+                "Le petit chat",
+                "La souris verte",
+                "Un dragon gentil",
+                "Une princesse courageuse",
+                "Le robot rigolo",
+                "Un astronaute curieux",
+            ],
+            [
+                "mange",
+                "court après",
+                "danse avec",
+                "cherche",
+                "découvre",
+                "rêve de",
+            ],
+            [
+                "une grosse pomme rouge",
+                "son meilleur ami",
+                "un trésor caché",
+                "une étoile filante",
+                "un gâteau magique",
+                "une carte mystérieuse",
+            ],
+            [
+                "dans la forêt enchantée",
+                "sur la Lune",
+                "sous l'océan",
+                "au pays des bonbons",
+                "dans un château volant",
+                "au sommet d'une montagne",
+            ],
+            [
+                "pour sauver le monde",
+                "avant le coucher du soleil",
+                "avec l'aide d'un perroquet",
+                "et trouve un ami surprise",
+                "sous les applaudissements",
+                "pour devenir un héros",
+            ],
+        ],
+    },
+
+    animaux: {
+        id: "animaux",
+        name: "Animaux",
+        icon: "🦁",
+        description: "Histoires d'animaux de la ferme et de la forêt",
+        bands: [
+            [
+                "Le lion majestueux",
+                "La petite grenouille",
+                "Un éléphant sage",
+                "Le renard rusé",
+                "La tortue patiente",
+                "Le papillon coloré",
+            ],
+            ["joue", "nage", "saute", "vole", "grimpe", "se cache"],
+            [
+                "avec une coccinelle",
+                "dans la rivière",
+                "sur un rocher",
+                "entre les arbres",
+                "près du lac",
+                "dans les herbes hautes",
+            ],
+            [
+                "pendant l'orage",
+                "au lever du soleil",
+                "sous la pluie",
+                "par une nuit étoilée",
+                "en plein été",
+                "au printemps",
+            ],
+            [
+                "et fait rire tout le monde",
+                "pour trouver sa famille",
+                "en chantant joyeusement",
+                "et s'endort paisiblement",
+                "puis rentre à la maison",
+                "avant la tombée de la nuit",
+            ],
+        ],
+    },
+
+    ecole: {
+        id: "ecole",
+        name: "À l'école",
+        icon: "🎒",
+        description: "La vie à l'école et les apprentissages",
+        bands: [
+            [
+                "La maîtresse",
+                "Les élèves",
+                "Le directeur",
+                "Mon copain Jules",
+                "Ma copine Léa",
+                "Le petit nouveau",
+            ],
+            ["dessine", "écrit", "compte", "lit", "chante", "apprend"],
+            [
+                "une belle histoire",
+                "les nombres jusqu'à 100",
+                "un poème rigolo",
+                "les lettres de l'alphabet",
+                "une chanson",
+                "la météo",
+            ],
+            [
+                "dans la classe",
+                "à la bibliothèque",
+                "dans la cour",
+                "pendant la récréation",
+                "à la cantine",
+                "en salle informatique",
+            ],
+            [
+                "et tout le monde applaudit",
+                "pour la fête de l'école",
+                "avec beaucoup de plaisir",
+                "et gagne une étoile",
+                "devant tous ses camarades",
+                "en s'amusant beaucoup",
+            ],
+        ],
+    },
+
+    vacances: {
+        id: "vacances",
+        name: "Vacances",
+        icon: "🏖️",
+        description: "Aventures pendant les vacances",
+        bands: [
+            [
+                "Toute la famille",
+                "Mamie et papi",
+                "Mon cousin",
+                "Ma petite sœur",
+                "Mon grand frère",
+                "Mes parents",
+            ],
+            [
+                "partent en voyage",
+                "visitent",
+                "découvrent",
+                "se baignent",
+                "explorent",
+                "admirent",
+            ],
+            [
+                "la mer bleue",
+                "une grande montagne",
+                "un musée passionnant",
+                "un parc d'attractions",
+                "un château fort",
+                "une grotte mystérieuse",
+            ],
+            [
+                "pendant l'été",
+                "en automne",
+                "sous le soleil",
+                "par beau temps",
+                "en fin de journée",
+                "le week-end",
+            ],
+            [
+                "et prennent plein de photos",
+                "en mangeant des glaces",
+                "et rentrent fatigués mais heureux",
+                "pour garder de beaux souvenirs",
+                "et racontent leur journée",
+                "avant de repartir",
+            ],
+        ],
+    },
+
+    contes: {
+        id: "contes",
+        name: "Contes de fées",
+        icon: "🧚",
+        description: "Univers magique des contes classiques",
+        bands: [
+            [
+                "La fée Clochette",
+                "Le prince charmant",
+                "La méchante sorcière",
+                "Un lutin farceur",
+                "La Belle au bois dormant",
+                "Le Petit Poucet",
+            ],
+            [
+                "jette un sort",
+                "combat",
+                "protège",
+                "transforme",
+                "libère",
+                "enchante",
+            ],
+            [
+                "un miroir magique",
+                "la forêt interdite",
+                "le royaume enchanté",
+                "une baguette dorée",
+                "un livre de sorts",
+                "une clé en argent",
+            ],
+            [
+                "au clair de lune",
+                "à minuit pile",
+                "dans le château hanté",
+                "près de la fontaine magique",
+                "au fond des bois",
+                "dans la tour la plus haute",
+            ],
+            [
+                "et tout le monde vécut heureux",
+                "pour briser la malédiction",
+                "et le royaume fut sauvé",
+                "jusqu'à la fin des temps",
+                "et la paix revint",
+                "pour l'éternité",
+            ],
+        ],
+    },
+
+    espace: {
+        id: "espace",
+        name: "Sciences et Espace",
+        icon: "🚀",
+        description: "Exploration spatiale et découvertes scientifiques",
+        bands: [
+            [
+                "L'astronaute Thomas",
+                "Le robot explorateur",
+                "La fusée spatiale",
+                "Un extraterrestre gentil",
+                "La scientifique Clara",
+                "Le satellite intelligent",
+            ],
+            [
+                "observe",
+                "explore",
+                "analyse",
+                "voyage vers",
+                "étudie",
+                "photographie",
+            ],
+            [
+                "une planète rouge",
+                "des étoiles filantes",
+                "la galaxie d'Andromède",
+                "un trou noir",
+                "des météorites brillantes",
+                "la Station Spatiale",
+            ],
+            [
+                "à bord de la fusée",
+                "depuis l'observatoire",
+                "en flottant dans l'espace",
+                "grâce au télescope",
+                "dans le laboratoire",
+                "à travers les nuages",
+            ],
+            [
+                "et fait une grande découverte",
+                "pour comprendre l'univers",
+                "et envoie des images sur Terre",
+                "en rêvant de nouvelles missions",
+                "pour partager avec les enfants",
+                "et inspire les générations futures",
+            ],
+        ],
+    },
+};
+
+/**
+ * Liste de tous les thèmes disponibles
+ * @returns {Array} Tableau des thèmes
+ */
+export const getAllThemes = () => {
+    return Object.values(themes);
+};

@@ -1,0 +1,214 @@
+import React, { useState, useEffect } from "react";
+import StoryBand from "../StoryBand/StoryBand";
+import StoryPreview from "./StoryPreview";
+import ThemeSelector from "../ThemeSelector/ThemeSelector";
+import ThemeEditor from "../ThemeEditor";
+import FavoritesList from "../Favorites/FavoritesList";
+import {
+    RandomButton,
+    BandCountSelector,
+    ExportButton,
+    FavoriteButton,
+} from "../Controls";
+import { useStoryBands } from "../../hooks/useStoryBands";
+import { useThemes } from "../../hooks/useThemes";
+import { DEFAULT_BAND_COUNT } from "../../data/defaultStories";
+
+/**
+ * Composant principal de construction d'histoires
+ * @component
+ */
+const StoryBuilder = () => {
+    const {
+        currentThemeId,
+        currentTheme,
+        allThemes,
+        changeTheme,
+        reloadCustomThemes,
+    } = useThemes();
+
+    const {
+        bandCount,
+        bandsContent,
+        activeIndices,
+        changeBandCount,
+        rotateBand,
+        randomize,
+        setContent,
+        getCurrentSentence,
+    } = useStoryBands(DEFAULT_BAND_COUNT, currentTheme.bands);
+
+    const [showThemeEditor, setShowThemeEditor] = useState(false);
+    const [showFavorites, setShowFavorites] = useState(false);
+    const [editingTheme, setEditingTheme] = useState(null);
+
+    // Mettre à jour le contenu quand le thème change
+    useEffect(() => {
+        setContent(currentTheme.bands);
+    }, [currentTheme, setContent]);
+
+    /**
+     * Gère le changement de thème
+     */
+    const handleThemeChange = (themeId) => {
+        changeTheme(themeId);
+    };
+
+    /**
+     * Ouvre l'éditeur pour créer un nouveau thème
+     */
+    const handleCreateNewTheme = () => {
+        setEditingTheme(null);
+        setShowThemeEditor(true);
+    };
+
+    /**
+     * Sauvegarde un thème (nouveau ou modifié)
+     */
+    const handleSaveTheme = (theme) => {
+        reloadCustomThemes();
+        changeTheme(theme.id);
+        setShowThemeEditor(false);
+        setEditingTheme(null);
+    };
+
+    /**
+     * Charge une histoire favorite
+     */
+    const handleSelectFavorite = (favorite) => {
+        // Charger le thème du favori si différent
+        if (favorite.themeId && favorite.themeId !== currentThemeId) {
+            changeTheme(favorite.themeId);
+        }
+
+        // Ajuster le nombre de bandes
+        if (favorite.bandCount !== bandCount) {
+            changeBandCount(favorite.bandCount);
+        }
+
+        setShowFavorites(false);
+    };
+
+    return (
+        <div className="container mx-auto px-4 py-8 max-w-4xl">
+            <header className="text-center mb-8">
+                <h1 className="text-4xl md:text-5xl font-bold text-indigo-600 mb-2">
+                    🎨 Fabrique à Histoires
+                </h1>
+                <p className="text-gray-600 text-lg">
+                    Clique sur les bandes pour créer des histoires rigolotes !
+                </p>
+            </header>
+
+            {/* Sélecteur de thème */}
+            <ThemeSelector
+                themes={allThemes}
+                currentThemeId={currentThemeId}
+                onThemeChange={handleThemeChange}
+                onCreateNew={handleCreateNewTheme}
+            />
+
+            {/* Sélecteur de nombre de bandes */}
+            <BandCountSelector
+                currentCount={bandCount}
+                onChange={changeBandCount}
+                maxBands={bandsContent.length}
+            />
+
+            {/* Aperçu de la phrase */}
+            <StoryPreview sentence={getCurrentSentence} />
+
+            {/* Bandes interactives */}
+            <div
+                className="space-y-4 mb-6"
+                role="group"
+                aria-label="Bandes d'histoire interactives"
+            >
+                {Array.from({ length: bandCount }).map((_, index) => {
+                    const isLastBand = index === bandCount - 1;
+
+                    return (
+                        <StoryBand
+                            key={index}
+                            bandIndex={index}
+                            segments={
+                                bandsContent[index]?.map((seg) => {
+                                    // Ajouter le point à tous les segments de la dernière bande
+                                    if (
+                                        isLastBand &&
+                                        seg &&
+                                        !/[.!?]$/.test(seg)
+                                    ) {
+                                        return seg + ".";
+                                    }
+                                    return seg;
+                                }) || [""]
+                            }
+                            activeIndex={activeIndices[index] || 0}
+                            onRotate={rotateBand}
+                        />
+                    );
+                })}
+            </div>
+
+            {/* Contrôles */}
+            <div className="flex flex-col sm:flex-row justify-center gap-3 mb-6">
+                <RandomButton onClick={randomize} />
+                <FavoriteButton
+                    sentence={getCurrentSentence}
+                    bandCount={bandCount}
+                    themeId={currentThemeId}
+                    disabled={!getCurrentSentence}
+                />
+                <ExportButton
+                    sentence={getCurrentSentence}
+                    disabled={!getCurrentSentence}
+                />
+            </div>
+
+            {/* Bouton Mes Favoris */}
+            <div className="flex justify-center">
+                <button
+                    onClick={() => setShowFavorites(true)}
+                    className="
+            text-indigo-600 hover:text-indigo-800
+            font-medium text-sm
+            flex items-center gap-2
+            transition-colors duration-200
+          "
+                >
+                    <svg
+                        className="w-5 h-5"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                    >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                    Voir mes favoris
+                </button>
+            </div>
+
+            {/* Modale éditeur de thème */}
+            {showThemeEditor && (
+                <ThemeEditor
+                    initialTheme={editingTheme}
+                    onSave={handleSaveTheme}
+                    onCancel={() => {
+                        setShowThemeEditor(false);
+                        setEditingTheme(null);
+                    }}
+                />
+            )}
+
+            {/* Modale favoris */}
+            {showFavorites && (
+                <FavoritesList
+                    onClose={() => setShowFavorites(false)}
+                    onSelectFavorite={handleSelectFavorite}
+                />
+            )}
+        </div>
+    );
+};
+
+export default StoryBuilder;
