@@ -2,6 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ========================================
+   POLICE OPENDYSLEXIC VIA NPM
+======================================== */
+
+/* Classe appliquée au body quand le mode dyslexie est actif */
+body.dyslexia-font {
+    font-family: "OpenDyslexic", "Comic Sans MS", sans-serif !important;
+    line-height: 1.7;
+}
+
+/* Forcer la police sur tous les éléments en mode dyslexie */
+body.dyslexia-font * {
+    font-family: inherit !important;
+}
+
+/* Ajustements pour améliorer la lisibilité */
+body.dyslexia-font p,
+body.dyslexia-font h1,
+body.dyslexia-font h2,
+body.dyslexia-font h3,
+body.dyslexia-font button,
+body.dyslexia-font input,
+body.dyslexia-font label {
+    letter-spacing: 0.04em;
+}
+
+/* Améliorer le contraste des textes gris en mode dyslexie */
+body.dyslexia-font .text-gray-600 {
+    color: #374151 !important;
+}
+
+body.dyslexia-font .text-gray-500 {
+    color: #4b5563 !important;
+}
+
+/* ========================================
+   STYLES DE BASE
+======================================== */
+
 @layer base {
     body {
         @apply bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50;
