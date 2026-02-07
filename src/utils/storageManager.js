@@ -168,6 +168,38 @@ export const getLastTheme = () => {
 };
 
 /**
+ * Renomme un thème personnalisé
+ * @param {string} themeId - ID du thème à renommer
+ * @param {string} newName - Nouveau nom du thème
+ * @returns {boolean} Succès de l'opération
+ */
+export const renameCustomTheme = (themeId, newName) => {
+    try {
+        const customThemes = getCustomThemes();
+        const themeIndex = customThemes.findIndex((t) => t.id === themeId);
+
+        if (themeIndex === -1) {
+            console.error("Thème non trouvé:", themeId);
+            return false;
+        }
+
+        // Mettre à jour le nom
+        customThemes[themeIndex].name = newName;
+        customThemes[themeIndex].updatedAt = new Date().toISOString();
+
+        // Sauvegarder
+        localStorage.setItem(
+            STORAGE_KEYS.CUSTOM_THEMES,
+            JSON.stringify(customThemes)
+        );
+        return true;
+    } catch (error) {
+        console.error("Erreur renommage thème:", error);
+        return false;
+    }
+};
+
+/**
  * Exporte toutes les données en JSON
  * @returns {string} JSON des données
  */

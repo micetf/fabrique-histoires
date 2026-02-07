@@ -2,6 +2,13 @@
  * Bibliothèque de thèmes prédéfinis pour la Fabrique à Histoires
  * Chaque thème contient 5 bandes avec 6 segments minimum
  * La ponctuation finale est ajoutée automatiquement
+ *
+ * Structure grammaticale respectée :
+ * - Bande 1 : Groupe nominal sujet (qui ?)
+ * - Bande 2 : Verbe transitif (fait quoi ?)
+ * - Bande 3 : Complément d'objet direct (quoi ?)
+ * - Bande 4 : Complément circonstanciel de lieu (où ?)
+ * - Bande 5 : Complément circonstanciel ou proposition finale (quand/comment/pourquoi ?)
  */
 
 export const themes = {
@@ -68,30 +75,30 @@ export const themes = {
                 "La tortue patiente",
                 "Le papillon coloré",
             ],
-            ["joue", "nage", "saute", "vole", "grimpe", "se cache"],
+            ["observe", "poursuit", "cherche", "rencontre", "appelle", "guide"],
             [
-                "avec une coccinelle",
+                "une coccinelle rouge",
+                "un poisson argenté",
+                "une libellule bleue",
+                "son reflet dans l'eau",
+                "un scarabée doré",
+                "une fourmi travailleuse",
+            ],
+            [
+                "près du lac",
                 "dans la rivière",
                 "sur un rocher",
                 "entre les arbres",
-                "près du lac",
-                "dans les herbes hautes",
+                "sous les feuilles",
+                "au bord du sentier",
             ],
             [
                 "pendant l'orage",
                 "au lever du soleil",
-                "sous la pluie",
-                "par une nuit étoilée",
-                "en plein été",
-                "au printemps",
-            ],
-            [
-                "et fait rire tout le monde",
-                "pour trouver sa famille",
-                "en chantant joyeusement",
-                "et s'endort paisiblement",
-                "puis rentre à la maison",
                 "avant la tombée de la nuit",
+                "sous la pluie fine",
+                "en plein été",
+                "par une nuit étoilée",
             ],
         ],
     },
@@ -104,28 +111,28 @@ export const themes = {
         bands: [
             [
                 "La maîtresse",
-                "Les élèves",
+                "Les élèves de CE1",
                 "Le directeur",
                 "Mon copain Jules",
                 "Ma copine Léa",
-                "Le petit nouveau",
+                "Nos camarades",
             ],
-            ["dessine", "écrit", "compte", "lit", "chante", "apprend"],
+            ["dessine", "écrit", "lit", "chante", "apprend", "présente"],
             [
                 "une belle histoire",
-                "les nombres jusqu'à 100",
                 "un poème rigolo",
                 "les lettres de l'alphabet",
-                "une chanson",
-                "la météo",
+                "une chanson douce",
+                "un projet artistique",
+                "une expérience scientifique",
             ],
             [
                 "dans la classe",
                 "à la bibliothèque",
                 "dans la cour",
-                "pendant la récréation",
                 "à la cantine",
                 "en salle informatique",
+                "dans le gymnase",
             ],
             [
                 "et tout le monde applaudit",
@@ -153,12 +160,12 @@ export const themes = {
                 "Mes parents",
             ],
             [
-                "partent en voyage",
                 "visitent",
                 "découvrent",
-                "se baignent",
                 "explorent",
                 "admirent",
+                "photographient",
+                "parcourent",
             ],
             [
                 "la mer bleue",
@@ -182,7 +189,7 @@ export const themes = {
                 "et rentrent fatigués mais heureux",
                 "pour garder de beaux souvenirs",
                 "et racontent leur journée",
-                "avant de repartir",
+                "avant de repartir à la maison",
             ],
         ],
     },
@@ -201,36 +208,29 @@ export const themes = {
                 "La Belle au bois dormant",
                 "Le Petit Poucet",
             ],
-            [
-                "jette un sort",
-                "combat",
-                "protège",
-                "transforme",
-                "libère",
-                "enchante",
-            ],
+            ["cherche", "protège", "utilise", "découvre", "libère", "enchante"],
             [
                 "un miroir magique",
-                "la forêt interdite",
-                "le royaume enchanté",
                 "une baguette dorée",
                 "un livre de sorts",
                 "une clé en argent",
+                "une potion mystérieuse",
+                "un coffre enchanté",
             ],
             [
                 "au clair de lune",
-                "à minuit pile",
                 "dans le château hanté",
                 "près de la fontaine magique",
                 "au fond des bois",
                 "dans la tour la plus haute",
+                "au royaume enchanté",
             ],
             [
                 "et tout le monde vécut heureux",
                 "pour briser la malédiction",
                 "et le royaume fut sauvé",
                 "jusqu'à la fin des temps",
-                "et la paix revint",
+                "et la paix revint partout",
                 "pour l'éternité",
             ],
         ],
@@ -248,15 +248,15 @@ export const themes = {
                 "La fusée spatiale",
                 "Un extraterrestre gentil",
                 "La scientifique Clara",
-                "Le satellite intelligent",
+                "Les astronomes",
             ],
             [
                 "observe",
                 "explore",
                 "analyse",
-                "voyage vers",
                 "étudie",
                 "photographie",
+                "découvre",
             ],
             [
                 "une planète rouge",
@@ -270,9 +270,9 @@ export const themes = {
                 "à bord de la fusée",
                 "depuis l'observatoire",
                 "en flottant dans l'espace",
-                "grâce au télescope",
-                "dans le laboratoire",
-                "à travers les nuages",
+                "dans le laboratoire spatial",
+                "au centre de contrôle",
+                "près de la Lune",
             ],
             [
                 "et fait une grande découverte",

@@ -53,23 +53,14 @@ const ThemeEditor = ({ onSave, onCancel, initialTheme = null }) => {
 
     /**
      * Suggestions de noms de bandes
+     * Structure grammaticale explicite alignée sur les programmes cycles 2-3
      */
     const bandNameSuggestions = [
-        "Personnages",
-        "Sujets",
-        "Qui ?",
-        "Actions",
-        "Verbes",
-        "Fait quoi ?",
-        "Objets",
-        "Compléments",
-        "Avec quoi ?",
-        "Lieux",
-        "Où ?",
-        "Dans quel endroit ?",
-        "Moments",
-        "Quand ?",
-        "Finales",
+        "Groupe nominal sujet (Qui ?)",
+        "Verbe transitif (Fait quoi ?)",
+        "Complément d'objet direct (Quoi ?)",
+        "Complément circonstanciel de lieu (Où ?)",
+        "Complément circonstanciel / Finale (Quand ? Comment ? Pourquoi ?)",
     ];
 
     /**

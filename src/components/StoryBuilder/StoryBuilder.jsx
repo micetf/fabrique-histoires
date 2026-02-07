@@ -4,6 +4,7 @@ import StoryPreview from "./StoryPreview";
 import ThemeSelector from "../ThemeSelector/ThemeSelector";
 import ThemeEditor from "../ThemeEditor";
 import FavoritesList from "../Favorites/FavoritesList";
+import ThemeImportExport from "../ThemeImportExport";
 import {
     RandomButton,
     BandCountSelector,
@@ -14,6 +15,10 @@ import {
 import { useStoryBands } from "../../hooks/useStoryBands";
 import { useThemes } from "../../hooks/useThemes";
 import { DEFAULT_BAND_COUNT } from "../../data/defaultStories";
+import {
+    deleteCustomTheme,
+    renameCustomTheme,
+} from "../../utils/storageManager";
 
 /**
  * Composant principal de construction d'histoires
@@ -41,6 +46,7 @@ const StoryBuilder = () => {
 
     const [showThemeEditor, setShowThemeEditor] = useState(false);
     const [showFavorites, setShowFavorites] = useState(false);
+    const [showImportExport, setShowImportExport] = useState(false);
     const [editingTheme, setEditingTheme] = useState(null);
 
     // Mettre à jour le contenu quand le thème change
@@ -64,6 +70,13 @@ const StoryBuilder = () => {
     };
 
     /**
+     * ⭐ Ouvre la modale d'import (appelé depuis ThemeSelector)
+     */
+    const handleOpenImport = () => {
+        setShowImportExport(true);
+    };
+
+    /**
      * Sauvegarde un thème (nouveau ou modifié)
      */
     const handleSaveTheme = (theme) => {
@@ -71,6 +84,46 @@ const StoryBuilder = () => {
         changeTheme(theme.id);
         setShowThemeEditor(false);
         setEditingTheme(null);
+    };
+
+    /**
+     * Renomme un thème personnalisé
+     */
+    const handleThemeRenamed = (themeId, newName) => {
+        const success = renameCustomTheme(themeId, newName);
+
+        if (success) {
+            reloadCustomThemes();
+        } else {
+            alert("Erreur lors du renommage du thème");
+        }
+    };
+
+    /**
+     * Supprime un thème personnalisé
+     */
+    const handleThemeDeleted = (themeId) => {
+        const success = deleteCustomTheme(themeId);
+
+        if (success) {
+            reloadCustomThemes();
+
+            // Si le thème supprimé était le thème actuel, basculer sur le thème par défaut
+            if (themeId === currentThemeId) {
+                changeTheme("default");
+            }
+        } else {
+            alert("Erreur lors de la suppression du thème");
+        }
+    };
+
+    /**
+     * Gère l'import d'un thème
+     */
+    const handleThemeImported = (theme) => {
+        reloadCustomThemes();
+        changeTheme(theme.id);
+        setShowImportExport(false);
     };
 
     /**
@@ -101,12 +154,15 @@ const StoryBuilder = () => {
                 </p>
             </header>
 
-            {/* Sélecteur de thème */}
+            {/* Sélecteur de thème - ⭐ AVEC onImportTheme */}
             <ThemeSelector
                 themes={allThemes}
                 currentThemeId={currentThemeId}
                 onThemeChange={handleThemeChange}
                 onCreateNew={handleCreateNewTheme}
+                onThemeDeleted={handleThemeDeleted}
+                onThemeRenamed={handleThemeRenamed}
+                onImportTheme={handleOpenImport}
             />
 
             {/* Sélecteur de nombre de bandes */}
@@ -177,11 +233,11 @@ const StoryBuilder = () => {
                 <button
                     onClick={() => setShowFavorites(true)}
                     className="
-            text-indigo-600 hover:text-indigo-800
-            font-medium text-sm
-            flex items-center gap-2
-            transition-colors duration-200
-          "
+                        text-indigo-600 hover:text-indigo-800
+                        font-medium text-sm
+                        flex items-center gap-2
+                        transition-colors duration-200
+                    "
                 >
                     <svg
                         className="w-5 h-5"
@@ -203,6 +259,16 @@ const StoryBuilder = () => {
                         setShowThemeEditor(false);
                         setEditingTheme(null);
                     }}
+                />
+            )}
+
+            {/* Modale Import/Export */}
+            {showImportExport && (
+                <ThemeImportExport
+                    currentTheme={currentTheme}
+                    allThemes={allThemes}
+                    onThemeImported={handleThemeImported}
+                    onClose={() => setShowImportExport(false)}
                 />
             )}
 
