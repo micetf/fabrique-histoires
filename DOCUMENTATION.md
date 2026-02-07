@@ -80,6 +80,9 @@ fabrique-histoires/
 │   │   │   ├── ThemeEditor.jsx
 │   │   │   ├── BandEditor.jsx
 │   │   │   └── index.js
+│   │   ├── ThemeImportExport/ # Import/Export de thèmes ✨ NOUVEAU
+│   │   │   ├── ThemeImportExport.jsx
+│   │   │   └── index.js
 │   │   └── Favorites/        # Gestion des favoris
 │   │       ├── FavoritesList.jsx
 │   │       └── index.js
@@ -90,10 +93,14 @@ fabrique-histoires/
 │   │   ├── defaultStories.js
 │   │   └── themes.js
 │   ├── utils/                # Fonctions utilitaires
-│   │   └── storageManager.js
+│   │   ├── storageManager.js
+│   │   └── themeImportExport.js ✨ NOUVEAU
 │   ├── App.jsx               # Composant racine
 │   ├── main.jsx              # Point d'entrée
 │   └── index.css             # Styles globaux + animations
+├── docs/                     # Documentation ✨ NOUVEAU
+│   ├── GUIDE-IMPORT-EXPORT.md
+│   └── exemple-theme-pirates.md
 ├── index.html
 ├── package.json
 ├── vite.config.js
@@ -113,7 +120,7 @@ fabrique-histoires/
 **Responsabilités** :
 
 - Orchestration de l'application
-- Gestion des thèmes (sélection, création)
+- Gestion des thèmes (sélection, création, import/export) ✨
 - Gestion des favoris
 - Coordination entre les sous-composants
 
@@ -124,6 +131,7 @@ fabrique-histoires/
 ```javascript
 const [showThemeEditor, setShowThemeEditor] = useState(false);
 const [showFavorites, setShowFavorites] = useState(false);
+const [showImportExport, setShowImportExport] = useState(false); // ✨ NOUVEAU
 const [editingTheme, setEditingTheme] = useState(null);
 ```
 
@@ -238,7 +246,59 @@ ThemeEditor.propTypes = {
 
 ---
 
-### 6. Controls (Boutons d'action)
+### 6. ThemeImportExport ✨ NOUVEAU
+
+**Fichier** : `src/components/ThemeImportExport/ThemeImportExport.jsx`
+
+**Responsabilités** :
+
+- Export de thèmes au format Markdown
+- Import de thèmes (Markdown ou ancien format TXT)
+- Gestion des conflits de noms
+- Validation des thèmes importés
+
+**Props** :
+
+```javascript
+ThemeImportExport.propTypes = {
+    currentTheme: PropTypes.object, // Thème actuellement sélectionné
+    allThemes: PropTypes.array.isRequired, // Tous les thèmes disponibles
+    onThemeImported: PropTypes.func.isRequired, // Callback après import réussi
+    onClose: PropTypes.func.isRequired, // Callback fermeture
+};
+```
+
+**Fonctionnalités** :
+
+- **Export** :
+
+    - Télécharge le thème actuel au format `.md`
+    - Uniquement pour les thèmes personnalisés
+    - Nom de fichier sanitizé automatiquement
+
+- **Import** :
+
+    - Formats supportés : `.md` (Markdown) et `.txt` (ancien format)
+    - Détection automatique du format
+    - Validation complète du contenu
+
+- **Gestion des conflits** :
+    - Détection des noms en doublon
+    - Option "Renommer" avec génération automatique
+    - Option "Remplacer" avec confirmation
+
+**État local** :
+
+```javascript
+const [importStatus, setImportStatus] = useState(null);
+const [showConflictDialog, setShowConflictDialog] = useState(false);
+const [conflictTheme, setConflictTheme] = useState(null);
+const [newName, setNewName] = useState("");
+```
+
+---
+
+### 7. Controls (Boutons d'action)
 
 #### RandomButton
 
@@ -404,6 +464,129 @@ const success = importAllData(jsonData);
 
 ---
 
+## 📦 Module themeImportExport ✨ NOUVEAU
+
+**Fichier** : `src/utils/themeImportExport.js`
+
+Module utilitaire pour l'import/export de thèmes au format Markdown avec rétrocompatibilité TXT.
+
+### API Export
+
+```javascript
+/**
+ * Exporte un thème au format Markdown
+ */
+exportThemeToMarkdown(theme);
+// Retourne : string (contenu Markdown)
+
+/**
+ * Télécharge un thème en tant que fichier .md
+ */
+downloadThemeAsMarkdown(theme);
+// Télécharge automatiquement le fichier
+```
+
+### API Import
+
+```javascript
+/**
+ * Parse un fichier Markdown
+ */
+parseMarkdownTheme(markdownContent);
+// Retourne : Object (thème) ou null si erreur
+
+/**
+ * Parse l'ancien format TXT
+ */
+parseLegacyTxtTheme(txtContent);
+// Retourne : Object (thème) ou null si erreur
+
+/**
+ * Importe un fichier (détection automatique du format)
+ */
+await importThemeFile(file);
+// Retourne : Promise<Object|null>
+```
+
+### API Gestion des conflits
+
+```javascript
+/**
+ * Vérifie si un nom existe déjà
+ */
+checkThemeNameConflict(themeName, existingThemes);
+// Retourne : boolean
+
+/**
+ * Génère un nom unique
+ */
+generateUniqueName(baseName, existingThemes);
+// Retourne : string (ex: "Pirates (3)")
+```
+
+### API Validation
+
+```javascript
+/**
+ * Valide un objet thème
+ */
+validateTheme(theme);
+// Retourne : { valid: boolean, errors: string[] }
+```
+
+### Format Markdown des thèmes
+
+**Structure** :
+
+```markdown
+---
+name: Nom du thème
+icon: 🎨
+description: Description du thème
+---
+
+## Bande 1 : Titre
+
+- Segment 1
+- Segment 2
+- ...
+
+## Bande 2 : Titre
+
+- Segment 1
+- ...
+```
+
+**Caractéristiques** :
+
+- **Front matter YAML** : Métadonnées du thème
+- **Sections Markdown** : Une section par bande
+- **Listes à puces** : Un item par segment
+- **Lisible et éditable** : Les enseignants peuvent créer des thèmes manuellement
+
+### Compatibilité ancien format TXT
+
+**Format MPFH** (ancien système) :
+
+```
+MPFH<div class="phrase"><input type="text" class="bande1" value="..."/>...</div>MPFH
+```
+
+**Conversion** :
+
+- Détection automatique par marqueurs `MPFH`
+- Extraction des 3 bandes (limitation de l'ancien format)
+- Génération des métadonnées par défaut
+- Import transparent pour l'utilisateur
+
+**Limitations de l'ancien format** :
+
+- Maximum 3 bandes (vs 5 pour le nouveau)
+- Pas de métadonnées (nom, icône, description)
+- Format HTML verbeux
+
+---
+
 ## 🎨 Système de thèmes
 
 ### Structure d'un thème
@@ -520,6 +703,8 @@ StoryBuilder (root)
     │   ThemeSelector
     │       ↓
     │   ThemeEditor
+    │       ↓
+    │   ThemeImportExport ✨ NOUVEAU
     │
     ├─→ useStoryBands() ──→ État des bandes
     │       ↓
@@ -559,6 +744,57 @@ StoryBuilder (root)
 5. getCurrentSentence recalculé (useMemo)
 6. StoryBand re-render avec nouveau activeIndex
 7. BandSegment remonte (key change) → animation CSS
+```
+
+### Import/Export de thème ✨ NOUVEAU
+
+**Flux d'export** :
+
+```
+1. User clique sur bouton "Import/Export"
+2. StoryBuilder affiche ThemeImportExport
+3. User clique sur "Exporter"
+4. ThemeImportExport → exportThemeToMarkdown(currentTheme)
+5. Génération du contenu Markdown
+6. downloadThemeAsMarkdown() → Téléchargement fichier .md
+7. User reçoit le fichier sur son ordinateur
+```
+
+**Flux d'import** :
+
+```
+1. User clique sur "Sélectionner un fichier"
+2. User choisit un fichier .md ou .txt
+3. ThemeImportExport → importThemeFile(file)
+4. Détection automatique du format
+5. Parse du contenu (parseMarkdownTheme ou parseLegacyTxtTheme)
+6. Validation du thème (validateTheme)
+7. Vérification des conflits (checkThemeNameConflict)
+8a. Si conflit → Affichage dialogue de résolution
+8b. Si pas de conflit → Sauvegarde directe
+9. saveCustomTheme() → localStorage
+10. reloadCustomThemes() → Mise à jour de la liste
+11. changeTheme() → Sélection du nouveau thème
+```
+
+**Résolution de conflits** :
+
+```
+1. Conflit détecté (nom identique)
+2. Affichage du dialogue avec 2 options :
+
+   Option A : Renommer
+   ├─ Génération nom unique (generateUniqueName)
+   ├─ User peut modifier le nom proposé
+   └─ Sauvegarde avec nouveau nom
+
+   Option B : Remplacer
+   ├─ Récupération de l'ancien thème
+   ├─ Remplacement avec même ID
+   └─ Sauvegarde écrase l'ancien
+
+3. Confirmation et fermeture du dialogue
+4. Message de succès à l'utilisateur
 ```
 
 ---
@@ -666,6 +902,24 @@ Component.propTypes = {
 - Résultat prévisible pour des props identiques
 - Logique métier dans les hooks
 
+### 6. Gestion des fichiers ✨ NOUVEAU
+
+✅ **Bonnes pratiques pour File API** :
+
+```javascript
+// Utiliser async/await pour file.text()
+const content = await file.text();
+
+// Réinitialiser l'input après traitement
+event.target.value = "";
+
+// Créer des Blobs avec type MIME correct
+const blob = new Blob([content], { type: "text/markdown;charset=utf-8" });
+
+// Nettoyer les URLs d'objets
+URL.revokeObjectURL(url);
+```
+
 ---
 
 ## 🧪 Guide de test
@@ -707,7 +961,59 @@ Component.propTypes = {
 - [ ] Icônes suggérées cliquables
 - [ ] Thème personnalisé apparaît dans la liste
 
-#### 6. Favoris
+#### 6. Import/Export de thèmes ✨ NOUVEAU
+
+**Export** :
+
+- [ ] Bouton "Import/Export" visible et accessible
+- [ ] Export désactivé pour thèmes prédéfinis
+- [ ] Export activé pour thèmes personnalisés
+- [ ] Fichier .md téléchargé avec bon nom
+- [ ] Contenu Markdown valide et complet
+- [ ] Métadonnées correctes (nom, icône, description)
+- [ ] Toutes les bandes et segments présents
+
+**Import Markdown** :
+
+- [ ] Sélection de fichier .md fonctionne
+- [ ] Parse correctement un fichier valide
+- [ ] Message de succès affiché
+- [ ] Thème apparaît dans la liste
+- [ ] Thème automatiquement sélectionné
+- [ ] Erreur affichée si fichier invalide
+- [ ] Détection des segments manquants
+- [ ] Validation du front matter YAML
+
+**Import TXT legacy** :
+
+- [ ] Sélection de fichier .txt fonctionne
+- [ ] Parse ancien format MPFH correctement
+- [ ] Conversion en 3 bandes minimum
+- [ ] Métadonnées par défaut générées
+- [ ] Message indiquant format legacy
+- [ ] Compatibilité ascendante préservée
+
+**Gestion des conflits** :
+
+- [ ] Détection de nom en doublon
+- [ ] Dialogue de résolution affiché
+- [ ] Option "Renommer" avec nom suggéré
+- [ ] Modification du nom suggéré possible
+- [ ] Import avec nouveau nom fonctionne
+- [ ] Option "Remplacer" affiche avertissement
+- [ ] Remplacement écrase bien l'ancien thème
+- [ ] Annulation retourne à l'état initial
+- [ ] Génération de noms uniques (suffixes numériques)
+
+**Validation** :
+
+- [ ] Fichier sans front matter rejeté
+- [ ] Fichier sans bandes rejeté
+- [ ] Bandes avec <2 segments rejetées
+- [ ] Messages d'erreur explicites
+- [ ] Validation ne casse pas l'interface
+
+#### 7. Favoris
 
 - [ ] Bouton étoile sauvegarde l'histoire
 - [ ] Feedback visuel "Sauvegardée !"
@@ -715,7 +1021,7 @@ Component.propTypes = {
 - [ ] Chargement d'un favori restaure l'état
 - [ ] Suppression fonctionne
 
-#### 7. Export PNG
+#### 8. Export PNG
 
 - [ ] Export génère une image
 - [ ] Nom de fichier contient la date
@@ -723,26 +1029,50 @@ Component.propTypes = {
 - [ ] Découpage multi-lignes si phrase longue
 - [ ] Signature "micetf.fr" présente
 
-#### 8. Mode plein écran
+#### 9. Mode plein écran
 
 - [ ] Bouton disponible (si API supportée)
 - [ ] Passage en plein écran fonctionne
 - [ ] Sortie avec Échap fonctionne
 - [ ] Icône change selon l'état
 
-#### 9. Persistance localStorage
+#### 10. Persistance localStorage
 
 - [ ] Thèmes personnalisés conservés après F5
+- [ ] Thèmes importés conservés après F5
 - [ ] Favoris conservés après F5
 - [ ] Dernier thème utilisé restauré au lancement
 
-#### 10. Responsive
+#### 11. Responsive
 
 - [ ] Layout adapté sur mobile (320px)
 - [ ] Layout adapté sur tablette (768px)
 - [ ] Layout adapté sur desktop (1024px+)
 - [ ] Texte lisible à toutes les tailles
 - [ ] Boutons accessibles au doigt
+
+#### 12. Tests avancés Import/Export ✨
+
+**Round-trip** :
+
+- [ ] Exporter un thème puis le réimporter
+- [ ] Données identiques après round-trip
+- [ ] Pas de perte d'information
+
+**Édition manuelle Markdown** :
+
+- [ ] Créer un .md manuellement
+- [ ] Import d'un fichier créé à la main
+- [ ] Tolérance aux variations de format
+- [ ] Espaces/indentation tolérés
+
+**Cas limites** :
+
+- [ ] Fichier vide
+- [ ] Fichier avec caractères spéciaux
+- [ ] Fichier très long (>100 segments)
+- [ ] Accents et emojis dans le contenu
+- [ ] Noms avec caractères Unicode
 
 ---
 
@@ -756,6 +1086,7 @@ Component.propTypes = {
 4. **Pas d'impression directe** : Export PNG uniquement
 5. **Pas de sons** : Pas de feedback audio
 6. **Pas de mode sombre** : Thème clair uniquement
+7. **Parser YAML simplifié** ✨ : Supporte uniquement les métadonnées basiques (clé:valeur)
 
 ### Bugs potentiels à surveiller
 
@@ -772,11 +1103,43 @@ Component.propTypes = {
     - Solution : Utiliser blob + download attribute
 
 4. **Animation saccadée** : Si trop de bandes ou segments
+
     - Solution : Limiter à 5 bandes, 12 segments max
+
+5. **Import de fichiers volumineux** ✨ : Peut bloquer l'interface
+
+    - Solution actuelle : Pas de limite implémentée
+    - Solution future : Ajouter vérification de taille (max 1MB)
+
+6. **Encodage non-UTF8** ✨ : Peut causer des erreurs de lecture
+    - Solution : Documenter l'exigence UTF-8
+    - Les navigateurs modernes gèrent généralement UTF-8 par défaut
 
 ---
 
 ## 🚀 Roadmap et évolutions futures
+
+### Priorité 1 : Import/Export amélioré ✨
+
+- [x] Export au format Markdown
+- [x] Import Markdown avec validation
+- [x] Rétrocompatibilité ancien format TXT
+- [x] Gestion des conflits de noms
+- [ ] **Parser YAML complet** : Intégrer bibliothèque `js-yaml` pour métadonnées avancées
+- [ ] **Validation stricte** : Schéma JSON pour valider les thèmes
+- [ ] **Prévisualisation avant import** : Afficher le thème avant de l'importer
+- [ ] **Import par URL** : Importer depuis un lien web
+- [ ] **Batch import** : Importer plusieurs thèmes à la fois
+- [ ] **Export multi-thèmes** : Exporter plusieurs thèmes en un seul fichier
+
+### Priorité 2 : Partage et collaboration
+
+- [ ] **Hub de thèmes** : Plateforme de partage communautaire
+- [ ] **QR Code** : Générer QR code pour partage rapide
+- [ ] **Export vers Google Drive** : Intégration Google Drive API
+- [ ] **Versioning des thèmes** : Historique des modifications
+- [ ] **Commentaires et notes** : Ajouter des annotations aux thèmes
+- [ ] **Catégories et tags** : Organiser les thèmes par niveau/matière
 
 ### Priorité 3 : Améliorations UX
 
@@ -785,16 +1148,16 @@ Component.propTypes = {
 - [ ] **Animation 3D avancée** : Bandes cylindriques 3D
 - [ ] **Mode sombre** : Thème sombre avec switch
 - [ ] **Partage direct** : Email, réseaux sociaux, QR code
+- [ ] **Templates de thèmes** : Modèles prêts à personnaliser
 
 ### Priorité 4 : Fonctionnalités avancées
 
-- [ ] **Import/Export de thèmes** : Fichiers JSON
-- [ ] **Galerie de thèmes** : Partage communautaire
 - [ ] **Historique d'annulation** : Ctrl+Z / Ctrl+Y
 - [ ] **Mode collaboratif** : Plusieurs utilisateurs en temps réel
 - [ ] **Impression PDF** : Export multi-histoires
 - [ ] **Statistiques** : Compteur de phrases générées
 - [ ] **Défis quotidiens** : Phrase imposée à compléter
+- [ ] **Mode enseignant** : Tableau de bord avec analytics
 
 ### Priorité 5 : Accessibilité
 
@@ -809,8 +1172,9 @@ Component.propTypes = {
 - [ ] **Lazy loading** : Chargement différé des modales
 - [ ] **Code splitting** : Découpage des bundles
 - [ ] **Service Worker** : Mode offline (PWA)
-- [ ] **IndexedDB** : Alternative à localStorage
+- [ ] **IndexedDB** : Alternative à localStorage pour gros volumes
 - [ ] **Optimisation images** : WebP, compression
+- [ ] **Compression des exports** : ZIP pour multi-thèmes
 
 ---
 
@@ -822,6 +1186,14 @@ Component.propTypes = {
 - [Vite Documentation](https://vitejs.dev/)
 - [Tailwind CSS Documentation](https://tailwindcss.com/)
 - [MDN Web APIs](https://developer.mozilla.org/en-US/docs/Web/API)
+- [File API](https://developer.mozilla.org/en-US/docs/Web/API/File)
+- [Blob API](https://developer.mozilla.org/en-US/docs/Web/API/Blob)
+
+### Markdown et YAML
+
+- [Markdown Guide](https://www.markdownguide.org/)
+- [YAML Specification](https://yaml.org/)
+- [Front Matter](https://jekyllrb.com/docs/front-matter/)
 
 ### Inspirations pédagogiques
 
@@ -884,6 +1256,8 @@ chore: Tâches de maintenance
 - Site principal : [https://micetf.fr](https://micetf.fr)
 - Email : webmaster@micetf.fr
 - Tutoriels vidéo : Chaîne YouTube MiCetF
+- **Guide Import/Export** ✨ : Voir `docs/GUIDE-IMPORT-EXPORT.md`
+- **Exemple de thème** ✨ : Voir `docs/exemple-theme-pirates.md`
 
 ### Pour les développeurs
 
@@ -920,6 +1294,12 @@ in the Software without restriction...
 | **PropTypes**           | Système de validation des props en JavaScript                   |
 | **useMemo**             | Hook React pour mémoriser une valeur calculée                   |
 | **useCallback**         | Hook React pour mémoriser une fonction                          |
+| **Front matter**        | ✨ Métadonnées YAML au début d'un fichier Markdown              |
+| **Markdown**            | ✨ Langage de balisage léger pour formater du texte             |
+| **Parser**              | ✨ Analyseur syntaxique qui transforme du texte en structure    |
+| **Blob**                | ✨ Objet JavaScript représentant des données binaires brutes    |
+| **MIME type**           | ✨ Identifiant du type de contenu d'un fichier                  |
+| **Round-trip**          | ✨ Export puis import pour tester la conservation des données   |
 
 ---
 
@@ -927,11 +1307,12 @@ in the Software without restriction...
 
 ### Statistiques actuelles
 
-- **Composants React** : 15
+- **Composants React** : 16 (+1) ✨
 - **Hooks personnalisés** : 2
+- **Modules utilitaires** : 2 (+1) ✨
 - **Thèmes prédéfinis** : 6
-- **Lignes de code** : ~2500
-- **Taille du bundle** : ~150 KB (gzipped)
+- **Lignes de code** : ~3200 (+700) ✨
+- **Taille du bundle** : ~160 KB (gzipped) (+10 KB) ✨
 - **Temps de build** : ~5 secondes
 - **Compatibilité navigateurs** : Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
 
@@ -946,10 +1327,50 @@ Avec les thèmes par défaut (6 segments/bande) :
 | 4      | 1 296        | 6⁴      |
 | 5      | 7 776        | 6⁵      |
 
+### Formats supportés ✨ NOUVEAU
+
+| Format   | Extension | Support      | Direction     |
+| -------- | --------- | ------------ | ------------- |
+| Markdown | .md       | Complet      | Import/Export |
+| TXT      | .txt      | Legacy       | Import seul   |
+| JSON     | .json     | localStorage | Interne       |
+| PNG      | .png      | Image        | Export phrase |
+
 ---
 
-**Document généré le** : 2026-02-06  
-**Version de l'application** : 1.0.0  
+## 🔐 Sécurité et bonnes pratiques
+
+### Validation des entrées ✨
+
+- **Sanitization des noms de fichiers** : Caractères interdits retirés
+- **Validation MIME types** : Vérification des extensions
+- **Taille maximale** : Pas de limite actuellement (à implémenter)
+- **Injection de code** : Pas de `eval()` ou `innerHTML` avec données utilisateur
+
+### Données sensibles
+
+- **Pas de données personnelles** : Aucune collecte d'informations utilisateur
+- **localStorage uniquement** : Pas de transmission réseau
+- **Thèmes publics** : Attention au partage de contenus inappropriés
+
+### Recommandations
+
+1. **Ne pas inclure** dans les thèmes :
+
+    - Informations personnelles
+    - Contenus offensants ou inappropriés
+    - Données confidentielles
+
+2. **Vérifier** les thèmes importés :
+    - Source fiable
+    - Contenu adapté à l'âge des élèves
+    - Qualité linguistique
+
+---
+
+**Document généré le** : 2026-02-07  
+**Version de l'application** : 1.1.0 ✨  
+**Dernière mise à jour** : Ajout de l'import/export de thèmes  
 **Auteur** : MiCetF - Frédéric MISERY
 
 ---

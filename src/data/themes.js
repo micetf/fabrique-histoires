@@ -14,7 +14,7 @@ export const themes = {
             [
                 "Le petit chat",
                 "La souris verte",
-                "Un dragon gentil",
+                "Un gentil dragon",
                 "Une princesse courageuse",
                 "Le robot rigolo",
                 "Un astronaute curieux",
@@ -25,7 +25,7 @@ export const themes = {
                 "danse avec",
                 "cherche",
                 "découvre",
-                "rêve de",
+                "rêve d'",
             ],
             [
                 "une grosse pomme rouge",

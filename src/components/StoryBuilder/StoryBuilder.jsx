@@ -4,6 +4,7 @@ import StoryPreview from "./StoryPreview";
 import ThemeSelector from "../ThemeSelector/ThemeSelector";
 import ThemeEditor from "../ThemeEditor";
 import FavoritesList from "../Favorites/FavoritesList";
+import ThemeImportExport from "../ThemeImportExport";
 import {
     RandomButton,
     BandCountSelector,
@@ -40,6 +41,7 @@ const StoryBuilder = () => {
 
     const [showThemeEditor, setShowThemeEditor] = useState(false);
     const [showFavorites, setShowFavorites] = useState(false);
+    const [showImportExport, setShowImportExport] = useState(false);
     const [editingTheme, setEditingTheme] = useState(null);
 
     // Mettre à jour le contenu quand le thème change
@@ -89,6 +91,15 @@ const StoryBuilder = () => {
         setShowFavorites(false);
     };
 
+    /**
+     * Gère l'import d'un thème
+     */
+    const handleThemeImported = (theme) => {
+        reloadCustomThemes();
+        changeTheme(theme.id);
+        setShowImportExport(false);
+    };
+
     return (
         <div className="container mx-auto px-4 py-8 max-w-4xl">
             <header className="text-center mb-8">
@@ -100,13 +111,46 @@ const StoryBuilder = () => {
                 </p>
             </header>
 
-            {/* Sélecteur de thème */}
-            <ThemeSelector
-                themes={allThemes}
-                currentThemeId={currentThemeId}
-                onThemeChange={handleThemeChange}
-                onCreateNew={handleCreateNewTheme}
-            />
+            {/* Sélecteur de thème avec bouton import/export */}
+            <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-start mb-6">
+                <div className="flex-1">
+                    <ThemeSelector
+                        themes={allThemes}
+                        currentThemeId={currentThemeId}
+                        onThemeChange={handleThemeChange}
+                        onCreateNew={handleCreateNewTheme}
+                    />
+                </div>
+                <button
+                    onClick={() => setShowImportExport(true)}
+                    className="
+                        bg-gradient-to-r from-blue-500 to-indigo-500
+                        hover:from-blue-600 hover:to-indigo-600
+                        text-white font-medium
+                        py-3 px-4 rounded-lg
+                        shadow-md hover:shadow-lg
+                        transition-all duration-200
+                        flex items-center justify-center gap-2
+                        focus:outline-none focus:ring-2 focus:ring-blue-500
+                    "
+                    title="Importer ou exporter des thèmes"
+                >
+                    <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
+                        />
+                    </svg>
+                    <span className="hidden sm:inline">Import/Export</span>
+                </button>
+            </div>
 
             {/* Sélecteur de nombre de bandes */}
             <BandCountSelector
@@ -171,11 +215,11 @@ const StoryBuilder = () => {
                 <button
                     onClick={() => setShowFavorites(true)}
                     className="
-            text-indigo-600 hover:text-indigo-800
-            font-medium text-sm
-            flex items-center gap-2
-            transition-colors duration-200
-          "
+                        text-indigo-600 hover:text-indigo-800
+                        font-medium text-sm
+                        flex items-center gap-2
+                        transition-colors duration-200
+                    "
                 >
                     <svg
                         className="w-5 h-5"
@@ -205,6 +249,16 @@ const StoryBuilder = () => {
                 <FavoritesList
                     onClose={() => setShowFavorites(false)}
                     onSelectFavorite={handleSelectFavorite}
+                />
+            )}
+
+            {/* Modale import/export */}
+            {showImportExport && (
+                <ThemeImportExport
+                    currentTheme={currentTheme}
+                    allThemes={allThemes}
+                    onThemeImported={handleThemeImported}
+                    onClose={() => setShowImportExport(false)}
                 />
             )}
         </div>
