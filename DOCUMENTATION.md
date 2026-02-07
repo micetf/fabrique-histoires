@@ -10,6 +10,7 @@
 - Comprendre la structure grammaticale des phrases
 - Favoriser l'apprentissage ludique de la syntaxe
 - Encourager la production d'écrits
+- Favoriser l'inclusion (support dyslexie)
 
 ---
 
@@ -24,6 +25,7 @@
 | **Tailwind CSS** | 3.4.3   | Framework CSS utility-first |
 | **pnpm**         | Latest  | Gestionnaire de packages    |
 | **PropTypes**    | 15.8.1  | Validation des props        |
+| **OpenDyslexic** | 5.2.5   | Police pour dyslexiques     |
 
 ### Prérequis système
 
@@ -72,7 +74,8 @@ fabrique-histoires/
 │   │   │   ├── FullscreenButton.jsx
 │   │   │   ├── ExportButton.jsx
 │   │   │   ├── FavoriteButton.jsx
-│   │   │   ├── ExportThemeButton.jsx        ⭐ NOUVEAU
+│   │   │   ├── ExportThemeButton.jsx
+│   │   │   ├── DyslexiaToggle.jsx        ⭐ NOUVEAU
 │   │   │   └── index.js
 │   │   ├── ThemeSelector/    # Sélecteur de thèmes
 │   │   │   ├── ThemeSelector.jsx
@@ -80,6 +83,9 @@ fabrique-histoires/
 │   │   ├── ThemeEditor/      # Éditeur de thèmes
 │   │   │   ├── ThemeEditor.jsx
 │   │   │   ├── BandEditor.jsx
+│   │   │   └── index.js
+│   │   ├── ThemeImportExport/ # Import/Export thèmes
+│   │   │   ├── ThemeImportExport.jsx
 │   │   │   └── index.js
 │   │   └── Favorites/        # Gestion des favoris
 │   │       ├── FavoritesList.jsx
@@ -92,10 +98,11 @@ fabrique-histoires/
 │   │   └── themes.js
 │   ├── utils/                # Fonctions utilitaires
 │   │   ├── storageManager.js
-│   │   └── generateStandaloneHTML.js        ⭐ NOUVEAU
+│   │   ├── generateStandaloneHTML.js
+│   │   └── themeImportExport.js         ⭐ NOUVEAU
 │   ├── App.jsx               # Composant racine
 │   ├── main.jsx              # Point d'entrée
-│   └── index.css             # Styles globaux + animations
+│   └── index.css             # Styles globaux + animations + dyslexie
 ├── index.html
 ├── package.json
 ├── vite.config.js
@@ -115,7 +122,7 @@ fabrique-histoires/
 **Responsabilités** :
 
 - Orchestration de l'application
-- Gestion des thèmes (sélection, création)
+- Gestion des thèmes (sélection, création, import/export)
 - Gestion des favoris
 - Coordination entre les sous-composants
 
@@ -126,6 +133,7 @@ fabrique-histoires/
 ```javascript
 const [showThemeEditor, setShowThemeEditor] = useState(false);
 const [showFavorites, setShowFavorites] = useState(false);
+const [showImportExport, setShowImportExport] = useState(false); // ⭐ AJOUT
 const [editingTheme, setEditingTheme] = useState(null);
 ```
 
@@ -145,6 +153,7 @@ const [editingTheme, setEditingTheme] = useState(null);
 - Affichage d'une bande cliquable
 - Gestion des interactions (clic, clavier)
 - Animation de rotation
+- **Ajout du point final sur la dernière bande active**
 
 **Props** :
 
@@ -162,7 +171,20 @@ StoryBand.propTypes = {
 - Clic ou Entrée/Espace : Fait défiler vers le segment suivant
 - 5 couleurs différenciées (blue, green, yellow, pink, purple)
 - Affiche l'indicateur de position (ex: "3/6")
-- **Point final automatique sur la dernière bande active**
+- **Point final automatique ajouté dans StoryBuilder sur la dernière bande**
+
+**Note importante** : La logique d'ajout du point final est dans `StoryBuilder.jsx` qui mappe les segments avant de les passer à `StoryBand` :
+
+```javascript
+segments={
+    bandsContent[index]?.map((seg) => {
+        if (isLastBand && seg && !/[.!?]$/.test(seg)) {
+            return seg + ".";
+        }
+        return seg;
+    }) || [""]
+}
+```
 
 ---
 
@@ -188,7 +210,26 @@ BandSegment.propTypes = {
 
 ---
 
-### 4. ThemeSelector (Sélecteur de thèmes)
+### 4. StoryPreview (Aperçu de phrase)
+
+**Fichier** : `src/components/StoryBuilder/StoryPreview.jsx`
+
+**Responsabilités** :
+
+- Affichage de la phrase complète générée
+- Message placeholder si aucune phrase
+
+**Props** :
+
+```javascript
+// ⚠️ ATTENTION : PropTypes NON UTILISÉ dans ce composant (écart aux conventions)
+// Props attendues :
+// sentence: PropTypes.string.isRequired
+```
+
+---
+
+### 5. ThemeSelector (Sélecteur de thèmes)
 
 **Fichier** : `src/components/ThemeSelector/ThemeSelector.jsx`
 
@@ -197,21 +238,26 @@ BandSegment.propTypes = {
 - Affichage d'un menu déroulant de thèmes
 - Preview avec icône et description
 - Bouton "Créer un nouveau thème"
+- **Bouton "Importer un thème" (.md/.txt)** ⭐ NOUVEAU
+- Renommer/supprimer les thèmes personnalisés
 
 **Props** :
 
 ```javascript
 ThemeSelector.propTypes = {
-    themes: PropTypes.array.isRequired, // Liste des thèmes
-    currentThemeId: PropTypes.string.isRequired, // ID du thème actuel
-    onThemeChange: PropTypes.func.isRequired, // Callback changement
-    onCreateNew: PropTypes.func.isRequired, // Callback création
+    themes: PropTypes.array.isRequired,
+    currentThemeId: PropTypes.string.isRequired,
+    onThemeChange: PropTypes.func.isRequired,
+    onCreateNew: PropTypes.func.isRequired,
+    onThemeDeleted: PropTypes.func.isRequired,
+    onThemeRenamed: PropTypes.func.isRequired,
+    onImportTheme: PropTypes.func.isRequired, // ⭐ NOUVEAU
 };
 ```
 
 ---
 
-### 5. ThemeEditor (Éditeur de thèmes)
+### 6. ThemeEditor (Éditeur de thèmes)
 
 **Fichier** : `src/components/ThemeEditor/ThemeEditor.jsx`
 
@@ -238,9 +284,72 @@ ThemeEditor.propTypes = {
 - Maximum 12 segments par bande
 - Pas de segments vides au milieu d'une bande
 
+**Suggestions de noms de bandes** :
+
+```javascript
+const bandNameSuggestions = [
+    "Groupe nominal sujet (Qui ?)",
+    "Verbe transitif (Fait quoi ?)",
+    "Complément d'objet direct (Quoi ?)",
+    "Complément circonstanciel de lieu (Où ?)",
+    "Complément circonstanciel / Finale (Quand ? Comment ? Pourquoi ?)",
+];
+```
+
 ---
 
-### 6. Controls (Boutons d'action)
+### 7. ⭐ ThemeImportExport (NOUVEAU)
+
+**Fichier** : `src/components/ThemeImportExport/ThemeImportExport.jsx`
+
+**Ajouté le** : 2026-02-07
+
+**Responsabilités** :
+
+- Export de thème personnalisé en Markdown (.md)
+- Import de thème depuis Markdown (.md) ou ancien format TXT
+- Gestion des conflits de noms (renommer/remplacer)
+- Validation des thèmes importés
+
+**Props** :
+
+```javascript
+ThemeImportExport.propTypes = {
+    currentTheme: PropTypes.object,
+    allThemes: PropTypes.array.isRequired,
+    onThemeImported: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
+};
+```
+
+**Format Markdown supporté** :
+
+```markdown
+---
+name: Nom du thème
+icon: 🎨
+description: Description du thème
+---
+
+## Bande 1 : Personnages
+
+- Segment 1
+- Segment 2
+
+## Bande 2 : Actions
+
+- Segment 1
+- Segment 2
+```
+
+**Compatibilité** :
+
+- Format Markdown moderne (.md avec YAML front matter)
+- Format TXT legacy (ancien format avec balises HTML `MPFH...MPFH`)
+
+---
+
+### 8. Controls (Boutons d'action)
 
 #### RandomButton
 
@@ -262,47 +371,47 @@ Exporte la phrase en image PNG (1200×800px) via Canvas API.
 
 Sauvegarde l'histoire actuelle dans localStorage.
 
-#### ⭐ ExportThemeButton (NOUVEAU)
+#### ExportThemeButton
 
-**Fichier** : `src/components/Controls/ExportThemeButton.jsx`
+Exporte le thème actuel en fichier HTML standalone (voir section dédiée).
+
+#### ⭐ DyslexiaToggle (NOUVEAU)
+
+**Fichier** : `src/components/Controls/DyslexiaToggle.jsx`
 
 **Ajouté le** : 2026-02-07
 
 **Responsabilités** :
 
-- Exporte le thème actuel en fichier HTML standalone
-- Génère un fichier 100% offline fonctionnel
-- Nom de fichier automatique basé sur le nom du thème
+- Active/désactive la police OpenDyslexic
+- Sauvegarde la préférence dans localStorage
+- Applique la classe `dyslexia-font` au `<body>`
 
-**Props** :
+**Fonctionnement** :
 
 ```javascript
-ExportThemeButton.propTypes = {
-    theme: PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        icon: PropTypes.string.isRequired,
-        description: PropTypes.string.isRequired,
-        bands: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
-            .isRequired,
-    }).isRequired,
-    disabled: PropTypes.bool,
-};
+// Activation : ajoute la classe au body
+document.body.classList.add("dyslexia-font");
+
+// CSS appliqué (index.css)
+body.dyslexia-font {
+    font-family: "OpenDyslexic", "Comic Sans MS", sans-serif !important;
+    line-height: 1.7;
+}
 ```
 
-**Comportement** :
+**Interface** :
 
-1. Génère un fichier HTML complet avec CSS et JS inline
-2. Crée un nom de fichier slug (ex: "Les Dinosaures" → "theme-les-dinosaures.html")
-3. Télécharge le fichier (~150-200 KB)
-4. Affiche un feedback visuel pendant la génération
+- Bouton fixe en bas à droite
+- Toggle switch visuel ON/OFF
+- Texte "Police dyslexie ON" / "Police dyslexie"
+- Persistance localStorage avec clé `fabrique_histoires_dyslexia_mode`
 
-**Cas d'usage** :
+**Cas d'usage pédagogiques** :
 
-- Enseignant crée un thème et l'exporte pour utilisation offline
-- Partage du fichier HTML sur clé USB ou par email
-- Utilisation en classe sans connexion Internet stable
-- TBI en mode plein écran sans risque de coupure réseau
+- Élèves dyslexiques ou en difficulté de lecture
+- Accessibilité renforcée conformément aux programmes d'éducation inclusive
+- Paramètre individuel conservé entre les sessions
 
 ---
 
@@ -428,6 +537,9 @@ const themes = getCustomThemes();
 
 // Supprimer un thème
 deleteCustomTheme(themeId);
+
+// Renommer un thème
+renameCustomTheme(themeId, newName);
 ```
 
 ### API de sauvegarde/restauration
@@ -448,7 +560,126 @@ const success = importAllData(jsonData);
 
 ---
 
-## ⭐ Système d'export HTML standalone (NOUVEAU)
+## ⭐ Système d'import/export de thèmes (NOUVEAU)
+
+### themeImportExport
+
+**Fichier** : `src/utils/themeImportExport.js`
+
+**Ajouté le** : 2026-02-07
+
+**Responsabilités** :
+
+- Export de thème en Markdown (.md)
+- Import depuis Markdown (.md) ou TXT legacy
+- Validation de thème
+- Gestion des conflits de noms
+
+### API principale
+
+```javascript
+/**
+ * Exporte un thème au format Markdown
+ */
+exportThemeToMarkdown(theme) → string
+
+/**
+ * Télécharge le fichier Markdown
+ */
+downloadThemeAsMarkdown(theme) → void
+
+/**
+ * Parse un fichier Markdown
+ */
+parseMarkdownTheme(markdownContent) → Object|null
+
+/**
+ * Parse l'ancien format TXT
+ */
+parseLegacyTxtTheme(txtContent) → Object|null
+
+/**
+ * Importe un fichier (détection automatique)
+ */
+importThemeFile(file) → Promise<Object|null>
+
+/**
+ * Vérifie les conflits de noms
+ */
+checkThemeNameConflict(themeName, existingThemes) → boolean
+
+/**
+ * Génère un nom unique
+ */
+generateUniqueName(baseName, existingThemes) → string
+
+/**
+ * Valide un thème
+ */
+validateTheme(theme) → { valid: boolean, errors: string[] }
+```
+
+### Format Markdown
+
+**Structure** :
+
+```markdown
+---
+name: Les Pirates
+icon: 🏴‍☠️
+description: Aventures de pirates sur les océans
+---
+
+## Bande 1 : Personnages
+
+- Le capitaine Barbe-Rouge
+- La pirate courageuse
+- Le mousse malicieux
+
+## Bande 2 : Actions
+
+- navigue
+- cherche
+- découvre
+```
+
+**Parser YAML simple** : Le parser ne supporte que les paires `clé: valeur` basiques (pas de YAML complexe).
+
+### Format TXT legacy
+
+**Structure** :
+
+```
+MPFH
+<div class="phrase">
+  <input class="bande1" value="Segment 1">
+  <input class="bande2" value="Segment 2">
+  <input class="bande3" value="Segment 3">
+</div>
+MPFH
+```
+
+**Compatibilité rétroactive** : Permet aux enseignants d'importer leurs anciens fichiers sans conversion manuelle.
+
+### Cas d'usage
+
+#### Scénario 1 : Partage entre enseignants
+
+1. Enseignant A crée un thème "Les Volcans"
+2. Exporte en Markdown
+3. Partage le fichier .md par email
+4. Enseignant B importe le fichier
+5. Utilise directement le thème
+
+#### Scénario 2 : Bibliothèque de thèmes
+
+- Constitution d'une bibliothèque de fichiers .md
+- Partage sur un drive commun
+- Import selon les besoins pédagogiques
+
+---
+
+## ⭐ Système d'export HTML standalone
 
 ### generateStandaloneHTML
 
@@ -491,24 +722,13 @@ export const downloadHTMLFile = (filename, content) => { ... }
         <title>Fabrique à Histoires - [Nom du thème]</title>
         <style>
             /* CSS Tailwind optimisé (~15 KB) */
-            /* Contient uniquement les classes utilisées */
         </style>
     </head>
     <body>
         <div id="root"></div>
         <script>
-            // Données du thème en JSON échappé
-            const THEME_DATA = {...};
-
-            // Application vanilla JavaScript
-            class StoryBandApp {
-              rotateBand(bandIndex) { ... }
-              randomize() { ... }
-              changeBandCount(count) { ... }
-              exportAsImage() { ... }
-              getCurrentSentence() { ... }
-              render() { ... }
-            }
+            const THEME_DATA = {...}; // Données échappées
+            class StoryBandApp { ... } // Application vanilla
         </script>
     </body>
 </html>
@@ -518,12 +738,12 @@ export const downloadHTMLFile = (filename, content) => { ... }
 
 ✅ **Incluses** :
 
-- Rotation des bandes (clic + clavier Enter/Espace)
-- Aperçu de la phrase complète avec ponctuation
+- Rotation des bandes (clic + clavier)
+- Aperçu de la phrase complète
 - Génération aléatoire
 - Sélecteur de nombre de bandes (2-5)
 - Export PNG de la phrase
-- Animations CSS (flip, rotation)
+- Animations CSS
 - Responsive design
 
 ❌ **Exclues** :
@@ -531,29 +751,7 @@ export const downloadHTMLFile = (filename, content) => { ... }
 - Sauvegarde de favoris
 - Création/modification de thème
 - Sélection d'autres thèmes
-- Connexion Internet requise
-
-### CSS Tailwind optimisé
-
-Le CSS embarqué contient **uniquement les classes utilisées** :
-
-**Taille** : ~15 KB (vs 3.5 MB Tailwind complet)
-
-**Classes incluses** :
-
-- Layout, spacing, typography
-- Palette de couleurs (blue/green/yellow/pink/purple/indigo/gray)
-- Effects, responsive, states
-- Animations personnalisées
-
-### Sécurité - Échappement XSS
-
-```javascript
-const themeDataJSON = JSON.stringify(theme)
-    .replace(/</g, "\\u003c") // Échapper <
-    .replace(/>/g, "\\u003e") // Échapper >
-    .replace(/&/g, "\\u0026"); // Échapper &
-```
+- Mode dyslexie (police non embarquée)
 
 ### Performance
 
@@ -564,28 +762,66 @@ const themeDataJSON = JSON.stringify(theme)
 | CSS optimisé        | ~15 KB                                        |
 | Compatible          | Chrome 90+, Firefox 88+, Safari 14+, Edge 90+ |
 
-### Cas d'usage pédagogiques
+---
 
-#### Scénario 1 : Classe sans Internet
+## ⭐ Système de police dyslexie (NOUVEAU)
 
-1. Enseignant crée le thème sur PC connecté
-2. Exporte en HTML
-3. Copie sur clé USB
-4. Distribue aux élèves
+### Configuration
 
-#### Scénario 2 : TBI en classe
+**Package** : `@fontsource/opendyslexic` version 5.2.5
 
-1. Exporte le thème
-2. Ouvre en plein écran (F11)
-3. Utilise pendant la séance
-4. Pas de risque de coupure
+**Import** : Dans `App.jsx`
 
-#### Scénario 3 : Devoirs à la maison
+```javascript
+import "@fontsource/opendyslexic/400.css";
+import "@fontsource/opendyslexic/700.css";
+```
 
-1. Partage le fichier par email
-2. Élèves créent des histoires
-3. Exportent en PNG
-4. Renvoient par email
+### CSS dédié
+
+**Fichier** : `src/index.css`
+
+```css
+/* Classe appliquée au body */
+body.dyslexia-font {
+    font-family: "OpenDyslexic", "Comic Sans MS", sans-serif !important;
+    line-height: 1.7;
+}
+
+/* Forcer sur tous les éléments */
+body.dyslexia-font * {
+    font-family: inherit !important;
+}
+
+/* Ajustements lisibilité */
+body.dyslexia-font p,
+body.dyslexia-font h1,
+body.dyslexia-font h2,
+body.dyslexia-font h3,
+body.dyslexia-font button,
+body.dyslexia-font input,
+body.dyslexia-font label {
+    letter-spacing: 0.04em;
+}
+
+/* Amélioration contraste */
+body.dyslexia-font .text-gray-600 {
+    color: #374151 !important;
+}
+```
+
+### Persistance
+
+**Clé localStorage** : `fabrique_histoires_dyslexia_mode`
+
+**Valeurs** : `"true"` ou `"false"`
+
+### Accessibilité
+
+- Conforme aux recommandations WCAG 2.1
+- Améliore la lisibilité pour dyslexiques
+- Police spécialement conçue avec empattements distincts
+- Espacement accru entre lettres et lignes
 
 ---
 
@@ -597,17 +833,17 @@ const themeDataJSON = JSON.stringify(theme)
 
 ```javascript
 {
-  id: 'unique_id',           // Identifiant unique
-  name: 'Nom du thème',      // Nom affiché
-  icon: '🎨',                // Émoji/icône
-  description: 'Description',// Texte descriptif
-  isCustom: false,           // true pour thèmes utilisateur
-  bands: [                   // 5 bandes minimum
-    ['Segment 1', 'Segment 2', ...],  // Bande 1 (min 2 segments)
-    ['Segment 1', 'Segment 2', ...],  // Bande 2
-    ['Segment 1', 'Segment 2', ...],  // Bande 3
-    ['Segment 1', 'Segment 2', ...],  // Bande 4
-    ['Segment 1', 'Segment 2', ...]   // Bande 5
+  id: 'unique_id',
+  name: 'Nom du thème',
+  icon: '🎨',
+  description: 'Description',
+  isCustom: false, // true pour thèmes utilisateur
+  bands: [
+    ['Segment 1', 'Segment 2', ...], // Bande 1 (min 2 segments)
+    ['Segment 1', 'Segment 2', ...], // Bande 2
+    ['Segment 1', 'Segment 2', ...], // Bande 3
+    ['Segment 1', 'Segment 2', ...], // Bande 4
+    ['Segment 1', 'Segment 2', ...]  // Bande 5
   ]
 }
 ```
@@ -625,13 +861,13 @@ const themeDataJSON = JSON.stringify(theme)
 
 ### Règles de conception des thèmes
 
-1. **Structure grammaticale** : Les bandes doivent former une phrase cohérente
+1. **Structure grammaticale** : Les bandes forment une phrase cohérente
 
-    - Bande 1 : Sujets (Qui ?)
-    - Bande 2 : Verbes (Fait quoi ?)
-    - Bande 3 : Compléments (Quoi ? Avec qui ?)
-    - Bande 4 : Lieux (Où ?)
-    - Bande 5 : Circonstances/Finales (Quand ? Pourquoi ?)
+    - Bande 1 : Groupe nominal sujet (Qui ?)
+    - Bande 2 : Verbe transitif (Fait quoi ?)
+    - Bande 3 : Complément d'objet direct (Quoi ?)
+    - Bande 4 : Complément circonstanciel de lieu (Où ?)
+    - Bande 5 : Complément circonstanciel / Finale (Quand ? Comment ? Pourquoi ?)
 
 2. **Longueur des segments** : 3-5 mots maximum par segment
 
@@ -639,8 +875,9 @@ const themeDataJSON = JSON.stringify(theme)
 
 4. **Ponctuation** :
 
-    - **NE PAS** mettre de point dans les données
-    - Le point est ajouté automatiquement par l'application
+    - **NE PAS** mettre de point dans les données `themes.js`
+    - Le point est ajouté automatiquement par l'application sur la dernière bande active
+    - Logique dans `StoryBuilder.jsx` lors du mapping des segments
 
 5. **Variété** : Minimum 6 segments par bande pour générer assez de combinaisons
 
@@ -656,6 +893,7 @@ const themeDataJSON = JSON.stringify(theme)
 @keyframes pageFlip {
     0% {
         transform: perspective(600px) rotateX(-90deg);
+        transform-origin: center top;
         opacity: 0;
     }
     30% {
@@ -664,6 +902,7 @@ const themeDataJSON = JSON.stringify(theme)
     }
     100% {
         transform: perspective(600px) rotateX(0deg);
+        transform-origin: center top;
         opacity: 1;
     }
 }
@@ -698,28 +937,34 @@ theme: {
 ### Diagramme de flux principal
 
 ```
-StoryBuilder (root)
+App.jsx (root)
     ↓
-    ├─→ useThemes() ──→ localStorage (thèmes)
-    │       ↓
-    │   ThemeSelector
-    │       ↓
-    │   ThemeEditor
-    │
-    ├─→ useStoryBands() ──→ État des bandes
-    │       ↓
-    │   StoryBand × N
-    │       ↓
-    │   BandSegment
-    │
-    ├─→ Controls
-    │   ├─ RandomButton
-    │   ├─ BandCountSelector
-    │   ├─ FavoriteButton ──→ localStorage (favoris)
-    │   ├─ ExportButton ──→ Canvas API
-    │   └─ ExportThemeButton ──→ generateStandaloneHTML ⭐ NOUVEAU
-    │
-    └─→ Favorites ──→ localStorage (favoris)
+    ├─ FullscreenButton
+    ├─ DyslexiaToggle ⭐
+    └─ StoryBuilder
+        ↓
+        ├─→ useThemes() ──→ localStorage (thèmes)
+        │       ↓
+        │   ThemeSelector ──→ onImportTheme() ⭐
+        │       ↓
+        │   ThemeEditor
+        │       ↓
+        │   ThemeImportExport ⭐
+        │
+        ├─→ useStoryBands() ──→ État des bandes
+        │       ↓
+        │   StoryBand × N
+        │       ↓
+        │   BandSegment
+        │
+        ├─→ Controls
+        │   ├─ RandomButton
+        │   ├─ BandCountSelector
+        │   ├─ FavoriteButton ──→ localStorage (favoris)
+        │   ├─ ExportButton ──→ Canvas API
+        │   └─ ExportThemeButton ──→ generateStandaloneHTML
+        │
+        └─→ Favorites ──→ localStorage (favoris)
 ```
 
 ### Changement de thème
@@ -743,23 +988,26 @@ StoryBuilder (root)
 3. StoryBuilder → rotateBand(bandIndex) [useStoryBands]
 4. useStoryBands met à jour activeIndices[bandIndex]
 5. getCurrentSentence recalculé (useMemo)
-6. StoryBand re-render avec nouveau activeIndex
-7. BandSegment remonte (key change) → animation CSS
+6. StoryBuilder mappe les segments et ajoute le point sur dernière bande
+7. StoryBand re-render avec nouveau activeIndex
+8. BandSegment remonte (key change) → animation CSS
 ```
 
-### ⭐ Export de thème (NOUVEAU)
+### ⭐ Import de thème
 
 ```
-1. User clique sur ExportThemeButton
-2. ExportThemeButton appelle generateStandaloneHTML(theme)
-3. generateStandaloneHTML :
-   a. Échappe les données JSON du thème
-   b. Génère le HTML avec CSS inline
-   c. Crée l'application JavaScript vanilla
-   d. Retourne la string HTML complète
-4. ExportThemeButton crée le nom de fichier (slug)
-5. downloadHTMLFile télécharge le fichier
-6. Feedback visuel (spinner → succès)
+1. User clique sur "Importer un thème" dans ThemeSelector
+2. ThemeSelector appelle onImportTheme()
+3. StoryBuilder ouvre la modale ThemeImportExport
+4. User sélectionne un fichier .md ou .txt
+5. ThemeImportExport → importThemeFile(file)
+6. Détection automatique du format (Markdown/TXT)
+7. Parsing avec parseMarkdownTheme() ou parseLegacyTxtTheme()
+8. Validation avec validateTheme()
+9. Vérification des conflits de noms
+10. Si conflit → Affichage dialogue renommer/remplacer
+11. Sinon → saveCustomTheme() direct
+12. StoryBuilder → reloadCustomThemes() et changeTheme(importedTheme.id)
 ```
 
 ---
@@ -802,6 +1050,12 @@ export default {
         extend: {
             animation: {
                 "spin-slow": "spin 3s linear infinite",
+                "flip-in": "pageFlip 0.6s cubic-bezier(0.4, 0.0, 0.2, 1)",
+            },
+            keyframes: {
+                pageFlip: {
+                    // Défini dans tailwind.config.js mais utilisé via index.css
+                },
             },
             fontFamily: {
                 comic: ["Comic Neue", "Comic Sans MS", "cursive"],
@@ -861,6 +1115,8 @@ Component.propTypes = {
 };
 ```
 
+⚠️ **Exception détectée** : `StoryPreview.jsx` n'utilise pas PropTypes (écart à la convention du projet)
+
 ### 5. Composants purs et idempotents
 
 - Pas d'effets de bord dans le render
@@ -879,13 +1135,14 @@ Component.propTypes = {
 - [ ] Touche Entrée/Espace fait défiler
 - [ ] Animation flip visible à chaque changement
 - [ ] Indicateur de position se met à jour (ex: 2/6)
+- [ ] Point final présent sur la dernière bande active
 
 #### 2. Changement de nombre de bandes
 
 - [ ] Sélecteur 2/3/4/5 fonctionne
 - [ ] Les bandes s'ajoutent/retirent correctement
 - [ ] La phrase se met à jour immédiatement
-- [ ] Le point final reste sur la dernière bande
+- [ ] Le point final reste sur la dernière bande après changement
 
 #### 3. Génération aléatoire
 
@@ -899,6 +1156,7 @@ Component.propTypes = {
 - [ ] Changement de thème met à jour le contenu
 - [ ] Thème actuel correctement indiqué
 - [ ] Création de nouveau thème fonctionne
+- [ ] Badge "Personnalisé" visible sur thèmes custom
 
 #### 5. Éditeur de thèmes
 
@@ -907,16 +1165,42 @@ Component.propTypes = {
 - [ ] Ajout/suppression de segments fonctionne
 - [ ] Icônes suggérées cliquables
 - [ ] Thème personnalisé apparaît dans la liste
+- [ ] Suggestions de noms de bandes affichées
 
-#### 6. Favoris
+#### 6. ⭐ Import/Export de thèmes (NOUVEAU)
+
+- [ ] Bouton "Importer un thème" visible dans ThemeSelector
+- [ ] Modale ThemeImportExport s'ouvre
+- [ ] Import fichier .md fonctionne
+- [ ] Import fichier .txt legacy fonctionne
+- [ ] Validation détecte les thèmes invalides
+- [ ] Gestion des conflits de noms :
+    - [ ] Dialogue renommer/remplacer s'affiche
+    - [ ] Renommage génère un nom unique
+    - [ ] Remplacement écrase l'ancien thème
+- [ ] Export en Markdown fonctionne
+- [ ] Fichier .md téléchargé contient YAML + bandes
+- [ ] Réimport du fichier exporté fonctionne
+
+#### 7. ⭐ Police dyslexie (NOUVEAU)
+
+- [ ] Bouton toggle visible en bas à droite
+- [ ] Switch ON/OFF fonctionne
+- [ ] Police OpenDyslexic s'applique à tout le texte
+- [ ] Contraste amélioré en mode dyslexie
+- [ ] Letter-spacing augmenté
+- [ ] Préférence sauvegardée après F5
+- [ ] Fonctionne dans tous les composants
+
+#### 8. Favoris
 
 - [ ] Bouton étoile sauvegarde l'histoire
 - [ ] Feedback visuel "Sauvegardée !"
 - [ ] Liste des favoris affichable
 - [ ] Chargement d'un favori restaure l'état
-- [ ] Suppression fonctionne
+- [ ] Suppression fonctionne avec confirmation
 
-#### 7. Export PNG
+#### 9. Export PNG
 
 - [ ] Export génère une image
 - [ ] Nom de fichier contient la date
@@ -924,36 +1208,32 @@ Component.propTypes = {
 - [ ] Découpage multi-lignes si phrase longue
 - [ ] Signature "micetf.fr" présente
 
-#### 8. ⭐ Export HTML standalone (NOUVEAU)
+#### 10. Export HTML standalone
 
 - [ ] Bouton "Exporter thème HTML" visible
 - [ ] Fichier HTML se télécharge (~150-200 KB)
 - [ ] Nom de fichier correct (slug du thème)
 - [ ] **Déconnecter Internet**
 - [ ] Ouvrir le fichier HTML téléchargé
-- [ ] Toutes les fonctionnalités marchent offline :
-    - [ ] Rotation des bandes
-    - [ ] Génération aléatoire
-    - [ ] Changement nombre de bandes
-    - [ ] Export PNG
+- [ ] Toutes les fonctionnalités marchent offline
 - [ ] Animations CSS fonctionnent
 - [ ] Responsive design OK
-- [ ] Pas d'erreur console
 
-#### 9. Mode plein écran
+#### 11. Mode plein écran
 
 - [ ] Bouton disponible (si API supportée)
 - [ ] Passage en plein écran fonctionne
 - [ ] Sortie avec Échap fonctionne
 - [ ] Icône change selon l'état
 
-#### 10. Persistance localStorage
+#### 12. Persistance localStorage
 
 - [ ] Thèmes personnalisés conservés après F5
 - [ ] Favoris conservés après F5
 - [ ] Dernier thème utilisé restauré au lancement
+- [ ] Préférence dyslexie conservée après F5
 
-#### 11. Responsive
+#### 13. Responsive
 
 - [ ] Layout adapté sur mobile (320px)
 - [ ] Layout adapté sur tablette (768px)
@@ -965,6 +1245,10 @@ Component.propTypes = {
 
 ## 🐛 Problèmes connus et limitations
 
+### Écarts aux conventions détectés
+
+1. **StoryPreview.jsx** : PropTypes non utilisé (incohérence avec les autres composants)
+
 ### Limitations actuelles
 
 1. **Pas de mode collaboratif** : Un seul utilisateur à la fois
@@ -973,6 +1257,8 @@ Component.propTypes = {
 4. **Pas d'impression directe** : Export PNG uniquement
 5. **Pas de sons** : Pas de feedback audio
 6. **Pas de mode sombre** : Thème clair uniquement
+7. **Police dyslexie non embarquée dans export HTML** : Fichiers standalone ne supportent pas la police OpenDyslexic
+8. **Parser YAML limité** : Ne supporte que les paires clé:valeur simples (pas de YAML complexe)
 
 ### Bugs potentiels à surveiller
 
@@ -996,36 +1282,41 @@ Component.propTypes = {
 
     - Solution : Échappement JSON déjà implémenté
 
+6. **Import fichier Markdown mal formé** : Peut crasher le parser
+    - Solution : Try/catch et validation déjà implémentés
+
 ---
 
 ## 🚀 Roadmap et évolutions futures
 
-### Priorité 1 : Export HTML (✅ TERMINÉ - 2026-02-07)
+### ✅ Fonctionnalités terminées (v1.2.0 - 2026-02-07)
 
-- [x] Génération fichier HTML standalone
-- [x] CSS Tailwind optimisé embarqué
-- [x] Application JavaScript vanilla
-- [x] Export PNG dans le fichier standalone
-- [x] 100% offline
+- [x] Export HTML standalone
+- [x] Import/Export thèmes Markdown
+- [x] Police dyslexie OpenDyslexic
+- [x] Renommer/supprimer thèmes personnalisés
+- [x] Gestion conflits de noms à l'import
 
-### Priorité 2 : Améliorations export HTML
+### Priorité 1 : Améliorations export/import
 
 - [ ] Notification toast après export réussi
 - [ ] Option pour personnaliser le nom du fichier
 - [ ] Prévisualisation avant export
-- [ ] Export de plusieurs thèmes dans un seul HTML
+- [ ] Export de plusieurs thèmes dans un seul fichier
+- [ ] Embarquement police dyslexie dans export HTML
+- [ ] Support YAML complexe (listes, objets imbriqués)
 
-### Priorité 3 : Améliorations UX
+### Priorité 2 : Améliorations UX
 
 - [ ] **Sons optionnels** : Clic, rotation, génération aléatoire
 - [ ] **Confettis** : Animation lors de la génération aléatoire
 - [ ] **Animation 3D avancée** : Bandes cylindriques 3D
 - [ ] **Mode sombre** : Thème sombre avec switch
 - [ ] **Partage direct** : Email, réseaux sociaux, QR code
+- [ ] **Correction PropTypes** : Ajouter PropTypes à StoryPreview.jsx
 
-### Priorité 4 : Fonctionnalités avancées
+### Priorité 3 : Fonctionnalités avancées
 
-- [ ] **Import/Export de thèmes** : Fichiers JSON
 - [ ] **Galerie de thèmes** : Partage communautaire
 - [ ] **Historique d'annulation** : Ctrl+Z / Ctrl+Y
 - [ ] **Mode collaboratif** : Plusieurs utilisateurs en temps réel
@@ -1033,15 +1324,15 @@ Component.propTypes = {
 - [ ] **Statistiques** : Compteur de phrases générées
 - [ ] **Défis quotidiens** : Phrase imposée à compléter
 
-### Priorité 5 : Accessibilité
+### Priorité 4 : Accessibilité
 
 - [ ] **Support lecteur d'écran** : ARIA labels complets
 - [ ] **Navigation clavier avancée** : Tab, flèches, raccourcis
 - [ ] **Contraste amélioré** : Respect WCAG 2.1 AAA
 - [ ] **Taille de texte ajustable** : Zoom sans casse du layout
-- [ ] **Support dyslexie** : Police OpenDyslexic optionnelle
+- [ ] **Alternatives textuelles** : Descriptions pour chaque interaction
 
-### Priorité 6 : Performance
+### Priorité 5 : Performance
 
 - [ ] **Lazy loading** : Chargement différé des modales
 - [ ] **Code splitting** : Découpage des bundles
@@ -1059,6 +1350,7 @@ Component.propTypes = {
 - [Vite Documentation](https://vitejs.dev/)
 - [Tailwind CSS Documentation](https://tailwindcss.com/)
 - [MDN Web APIs](https://developer.mozilla.org/en-US/docs/Web/API)
+- [OpenDyslexic Font](https://opendyslexic.org/)
 
 ### Inspirations pédagogiques
 
@@ -1107,7 +1399,7 @@ chore: Tâches de maintenance
 ### Standards de code
 
 1. **ESLint** : Pas de warnings autorisés
-2. **PropTypes** : Validation systématique
+2. **PropTypes** : Validation systématique (⚠️ exception StoryPreview.jsx à corriger)
 3. **JSDoc** : Documentation des fonctions complexes
 4. **Nommage** : camelCase pour variables/fonctions, PascalCase pour composants
 5. **Indentation** : 4 espaces (config actuelle du projet)
@@ -1159,6 +1451,9 @@ in the Software without restriction...
 | **useCallback**         | Hook React pour mémoriser une fonction                          |
 | **Standalone**          | Fichier autonome fonctionnant sans dépendances externes         |
 | **Offline**             | Fonctionnement sans connexion Internet                          |
+| **Markdown**            | Format de texte balisé léger                                    |
+| **YAML Front Matter**   | Métadonnées au début d'un fichier Markdown                      |
+| **OpenDyslexic**        | Police conçue pour faciliter la lecture aux dyslexiques         |
 
 ---
 
@@ -1166,13 +1461,13 @@ in the Software without restriction...
 
 ### Statistiques actuelles
 
-- **Composants React** : 16 (+ ExportThemeButton)
+- **Composants React** : 18 (+ DyslexiaToggle, + ThemeImportExport)
 - **Hooks personnalisés** : 2
-- **Utilitaires** : 2 (+ generateStandaloneHTML)
+- **Utilitaires** : 3 (+ themeImportExport)
 - **Thèmes prédéfinis** : 6
-- **Lignes de code** : ~3200
-- **Taille du bundle** : ~150 KB (gzipped)
-- **Temps de build** : ~5 secondes
+- **Lignes de code** : ~3800
+- **Taille du bundle** : ~180 KB (gzipped, incluant OpenDyslexic)
+- **Temps de build** : ~6 secondes
 - **Compatibilité navigateurs** : Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
 
 ### Combinaisons possibles
@@ -1189,6 +1484,43 @@ Avec les thèmes par défaut (6 segments/bande) :
 ---
 
 ## 📝 Changelog
+
+### Version 1.2.0 - 2026-02-07
+
+**✨ Nouvelles fonctionnalités**
+
+- Ajout du système d'import/export de thèmes
+- Nouveau composant `ThemeImportExport`
+- Nouveau utilitaire `themeImportExport.js`
+- Support format Markdown (.md) avec YAML front matter
+- Support rétrocompatibilité format TXT legacy
+- Gestion des conflits de noms (renommer/remplacer)
+- Validation complète des thèmes importés
+- Ajout du mode police dyslexie `DyslexiaToggle`
+- Package `@fontsource/opendyslexic` intégré
+- Renommer/supprimer thèmes personnalisés depuis ThemeSelector
+
+**🔒 Sécurité**
+
+- Validation stricte des fichiers importés
+- Parser YAML sécurisé (paires clé:valeur uniquement)
+- Try/catch sur toutes les opérations de parsing
+
+**♿ Accessibilité**
+
+- Police OpenDyslexic pour dyslexiques
+- Amélioration contraste en mode dyslexie
+- Persistance préférence dyslexie
+
+**📚 Documentation**
+
+- Documentation complète de l'import/export
+- Guide d'utilisation du format Markdown
+- Documentation du mode dyslexie
+
+**🐛 Corrections**
+
+- Aucune correction dans cette version (nouvelles fonctionnalités uniquement)
 
 ### Version 1.1.0 - 2026-02-07
 
@@ -1212,10 +1544,6 @@ Avec les thèmes par défaut (6 segments/bande) :
 - Guide d'installation rapide
 - Exemples de cas d'usage pédagogiques
 
-**🐛 Corrections**
-
-- Aucune correction dans cette version (nouvelle fonctionnalité uniquement)
-
 ### Version 1.0.0 - 2026-01-XX
 
 - Version initiale de la Fabrique à Histoires
@@ -1228,7 +1556,7 @@ Avec les thèmes par défaut (6 segments/bande) :
 ---
 
 **Document généré le** : 2026-02-07  
-**Version de l'application** : 1.1.0  
+**Version de l'application** : 1.2.0  
 **Auteur** : MiCetF - Frédéric MISERY  
 **Dernière mise à jour** : 2026-02-07
 

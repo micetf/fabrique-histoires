@@ -1,3 +1,4 @@
+// src/components/StoryBuilder/StoryBuilder.jsx
 import React, { useState, useEffect } from "react";
 import StoryBand from "../StoryBand/StoryBand";
 import StoryPreview from "./StoryPreview";
@@ -70,7 +71,7 @@ const StoryBuilder = () => {
     };
 
     /**
-     * ⭐ Ouvre la modale d'import (appelé depuis ThemeSelector)
+     * Ouvre la modale d'import (appelé depuis ThemeSelector)
      */
     const handleOpenImport = () => {
         setShowImportExport(true);
@@ -145,16 +146,9 @@ const StoryBuilder = () => {
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-4xl">
-            <header className="text-center mb-8">
-                <h1 className="text-4xl md:text-5xl font-bold text-indigo-600 mb-2">
-                    🎨 Fabrique à Histoires
-                </h1>
-                <p className="text-gray-600 text-lg">
-                    Clique sur les bandes pour créer des histoires rigolotes !
-                </p>
-            </header>
+            {/* ✅ Header supprimé - titre et sous-titre gérés par la Navbar */}
 
-            {/* Sélecteur de thème - ⭐ AVEC onImportTheme */}
+            {/* Sélecteur de thème */}
             <ThemeSelector
                 themes={allThemes}
                 currentThemeId={currentThemeId}

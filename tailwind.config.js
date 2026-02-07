@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-    content: ["./index.html", "./src/**/*.{js,jsx}"],
+    content: [
+        "./index.html",
+        "./src/**/*.{js,jsx}",
+        "./node_modules/@micetf/ui/dist/**/*.{js,jsx}",
+    ],
     theme: {
         extend: {
             animation: {
@@ -25,6 +29,7 @@ export default {
                     },
                 },
             },
+
             fontFamily: {
                 comic: ["Comic Neue", "Comic Sans MS", "cursive"],
             },
