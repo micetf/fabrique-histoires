@@ -19,11 +19,11 @@
 
 | Technologie      | Version | Usage                       |
 | ---------------- | ------- | --------------------------- |
-| **React**        | 18.2.0  | Framework UI                |
-| **Vite**         | 6.1.1   | Build tool & dev server     |
-| **Tailwind CSS** | 3.4.1   | Framework CSS utility-first |
+| **React**        | 19.2.0  | Framework UI                |
+| **Vite**         | 7.2.4   | Build tool & dev server     |
+| **Tailwind CSS** | 3.4.3   | Framework CSS utility-first |
 | **pnpm**         | Latest  | Gestionnaire de packages    |
-| **PropTypes**    | Latest  | Validation des props        |
+| **PropTypes**    | 15.8.1  | Validation des props        |
 
 ### Prérequis système
 
@@ -39,7 +39,7 @@ Navigateur moderne (Chrome, Firefox, Safari, Edge)
 # Installation des dépendances
 pnpm install
 
-# Lancement en mode développement (port 3000)
+# Lancement en mode développement (port 3020)
 pnpm dev
 
 # Build de production
@@ -72,6 +72,7 @@ fabrique-histoires/
 │   │   │   ├── FullscreenButton.jsx
 │   │   │   ├── ExportButton.jsx
 │   │   │   ├── FavoriteButton.jsx
+│   │   │   ├── ExportThemeButton.jsx        ⭐ NOUVEAU
 │   │   │   └── index.js
 │   │   ├── ThemeSelector/    # Sélecteur de thèmes
 │   │   │   ├── ThemeSelector.jsx
@@ -79,9 +80,6 @@ fabrique-histoires/
 │   │   ├── ThemeEditor/      # Éditeur de thèmes
 │   │   │   ├── ThemeEditor.jsx
 │   │   │   ├── BandEditor.jsx
-│   │   │   └── index.js
-│   │   ├── ThemeImportExport/ # Import/Export de thèmes ✨ NOUVEAU
-│   │   │   ├── ThemeImportExport.jsx
 │   │   │   └── index.js
 │   │   └── Favorites/        # Gestion des favoris
 │   │       ├── FavoritesList.jsx
@@ -94,13 +92,10 @@ fabrique-histoires/
 │   │   └── themes.js
 │   ├── utils/                # Fonctions utilitaires
 │   │   ├── storageManager.js
-│   │   └── themeImportExport.js ✨ NOUVEAU
+│   │   └── generateStandaloneHTML.js        ⭐ NOUVEAU
 │   ├── App.jsx               # Composant racine
 │   ├── main.jsx              # Point d'entrée
 │   └── index.css             # Styles globaux + animations
-├── docs/                     # Documentation ✨ NOUVEAU
-│   ├── GUIDE-IMPORT-EXPORT.md
-│   └── exemple-theme-pirates.md
 ├── index.html
 ├── package.json
 ├── vite.config.js
@@ -120,7 +115,7 @@ fabrique-histoires/
 **Responsabilités** :
 
 - Orchestration de l'application
-- Gestion des thèmes (sélection, création, import/export) ✨
+- Gestion des thèmes (sélection, création)
 - Gestion des favoris
 - Coordination entre les sous-composants
 
@@ -131,7 +126,6 @@ fabrique-histoires/
 ```javascript
 const [showThemeEditor, setShowThemeEditor] = useState(false);
 const [showFavorites, setShowFavorites] = useState(false);
-const [showImportExport, setShowImportExport] = useState(false); // ✨ NOUVEAU
 const [editingTheme, setEditingTheme] = useState(null);
 ```
 
@@ -246,59 +240,7 @@ ThemeEditor.propTypes = {
 
 ---
 
-### 6. ThemeImportExport ✨ NOUVEAU
-
-**Fichier** : `src/components/ThemeImportExport/ThemeImportExport.jsx`
-
-**Responsabilités** :
-
-- Export de thèmes au format Markdown
-- Import de thèmes (Markdown ou ancien format TXT)
-- Gestion des conflits de noms
-- Validation des thèmes importés
-
-**Props** :
-
-```javascript
-ThemeImportExport.propTypes = {
-    currentTheme: PropTypes.object, // Thème actuellement sélectionné
-    allThemes: PropTypes.array.isRequired, // Tous les thèmes disponibles
-    onThemeImported: PropTypes.func.isRequired, // Callback après import réussi
-    onClose: PropTypes.func.isRequired, // Callback fermeture
-};
-```
-
-**Fonctionnalités** :
-
-- **Export** :
-
-    - Télécharge le thème actuel au format `.md`
-    - Uniquement pour les thèmes personnalisés
-    - Nom de fichier sanitizé automatiquement
-
-- **Import** :
-
-    - Formats supportés : `.md` (Markdown) et `.txt` (ancien format)
-    - Détection automatique du format
-    - Validation complète du contenu
-
-- **Gestion des conflits** :
-    - Détection des noms en doublon
-    - Option "Renommer" avec génération automatique
-    - Option "Remplacer" avec confirmation
-
-**État local** :
-
-```javascript
-const [importStatus, setImportStatus] = useState(null);
-const [showConflictDialog, setShowConflictDialog] = useState(false);
-const [conflictTheme, setConflictTheme] = useState(null);
-const [newName, setNewName] = useState("");
-```
-
----
-
-### 7. Controls (Boutons d'action)
+### 6. Controls (Boutons d'action)
 
 #### RandomButton
 
@@ -319,6 +261,48 @@ Exporte la phrase en image PNG (1200×800px) via Canvas API.
 #### FavoriteButton
 
 Sauvegarde l'histoire actuelle dans localStorage.
+
+#### ⭐ ExportThemeButton (NOUVEAU)
+
+**Fichier** : `src/components/Controls/ExportThemeButton.jsx`
+
+**Ajouté le** : 2026-02-07
+
+**Responsabilités** :
+
+- Exporte le thème actuel en fichier HTML standalone
+- Génère un fichier 100% offline fonctionnel
+- Nom de fichier automatique basé sur le nom du thème
+
+**Props** :
+
+```javascript
+ExportThemeButton.propTypes = {
+    theme: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        icon: PropTypes.string.isRequired,
+        description: PropTypes.string.isRequired,
+        bands: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
+            .isRequired,
+    }).isRequired,
+    disabled: PropTypes.bool,
+};
+```
+
+**Comportement** :
+
+1. Génère un fichier HTML complet avec CSS et JS inline
+2. Crée un nom de fichier slug (ex: "Les Dinosaures" → "theme-les-dinosaures.html")
+3. Télécharge le fichier (~150-200 KB)
+4. Affiche un feedback visuel pendant la génération
+
+**Cas d'usage** :
+
+- Enseignant crée un thème et l'exporte pour utilisation offline
+- Partage du fichier HTML sur clé USB ou par email
+- Utilisation en classe sans connexion Internet stable
+- TBI en mode plein écran sans risque de coupure réseau
 
 ---
 
@@ -464,126 +448,144 @@ const success = importAllData(jsonData);
 
 ---
 
-## 📦 Module themeImportExport ✨ NOUVEAU
+## ⭐ Système d'export HTML standalone (NOUVEAU)
 
-**Fichier** : `src/utils/themeImportExport.js`
+### generateStandaloneHTML
 
-Module utilitaire pour l'import/export de thèmes au format Markdown avec rétrocompatibilité TXT.
+**Fichier** : `src/utils/generateStandaloneHTML.js`
 
-### API Export
+**Ajouté le** : 2026-02-07
 
-```javascript
-/**
- * Exporte un thème au format Markdown
- */
-exportThemeToMarkdown(theme);
-// Retourne : string (contenu Markdown)
+**Responsabilités** :
 
-/**
- * Télécharge un thème en tant que fichier .md
- */
-downloadThemeAsMarkdown(theme);
-// Télécharge automatiquement le fichier
-```
+- Génération d'un fichier HTML autonome contenant un thème complet
+- Embarquement du CSS Tailwind optimisé (~15 KB)
+- Application JavaScript vanilla (pas de React dans le fichier exporté)
+- Échappement XSS des données JSON
 
-### API Import
+**API** :
 
 ```javascript
 /**
- * Parse un fichier Markdown
+ * Génère un fichier HTML standalone pour un thème
+ * @param {Object} theme - Le thème à exporter
+ * @returns {string} Contenu HTML complet
  */
-parseMarkdownTheme(markdownContent);
-// Retourne : Object (thème) ou null si erreur
+export const generateStandaloneHTML = (theme) => { ... }
 
 /**
- * Parse l'ancien format TXT
+ * Télécharge le fichier HTML généré
+ * @param {string} filename - Nom du fichier
+ * @param {string} content - Contenu HTML
  */
-parseLegacyTxtTheme(txtContent);
-// Retourne : Object (thème) ou null si erreur
-
-/**
- * Importe un fichier (détection automatique du format)
- */
-await importThemeFile(file);
-// Retourne : Promise<Object|null>
+export const downloadHTMLFile = (filename, content) => { ... }
 ```
 
-### API Gestion des conflits
+### Architecture du fichier HTML généré
+
+```html
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Fabrique à Histoires - [Nom du thème]</title>
+        <style>
+            /* CSS Tailwind optimisé (~15 KB) */
+            /* Contient uniquement les classes utilisées */
+        </style>
+    </head>
+    <body>
+        <div id="root"></div>
+        <script>
+            // Données du thème en JSON échappé
+            const THEME_DATA = {...};
+
+            // Application vanilla JavaScript
+            class StoryBandApp {
+              rotateBand(bandIndex) { ... }
+              randomize() { ... }
+              changeBandCount(count) { ... }
+              exportAsImage() { ... }
+              getCurrentSentence() { ... }
+              render() { ... }
+            }
+        </script>
+    </body>
+</html>
+```
+
+### Fonctionnalités du fichier exporté
+
+✅ **Incluses** :
+
+- Rotation des bandes (clic + clavier Enter/Espace)
+- Aperçu de la phrase complète avec ponctuation
+- Génération aléatoire
+- Sélecteur de nombre de bandes (2-5)
+- Export PNG de la phrase
+- Animations CSS (flip, rotation)
+- Responsive design
+
+❌ **Exclues** :
+
+- Sauvegarde de favoris
+- Création/modification de thème
+- Sélection d'autres thèmes
+- Connexion Internet requise
+
+### CSS Tailwind optimisé
+
+Le CSS embarqué contient **uniquement les classes utilisées** :
+
+**Taille** : ~15 KB (vs 3.5 MB Tailwind complet)
+
+**Classes incluses** :
+
+- Layout, spacing, typography
+- Palette de couleurs (blue/green/yellow/pink/purple/indigo/gray)
+- Effects, responsive, states
+- Animations personnalisées
+
+### Sécurité - Échappement XSS
 
 ```javascript
-/**
- * Vérifie si un nom existe déjà
- */
-checkThemeNameConflict(themeName, existingThemes);
-// Retourne : boolean
-
-/**
- * Génère un nom unique
- */
-generateUniqueName(baseName, existingThemes);
-// Retourne : string (ex: "Pirates (3)")
+const themeDataJSON = JSON.stringify(theme)
+    .replace(/</g, "\\u003c") // Échapper <
+    .replace(/>/g, "\\u003e") // Échapper >
+    .replace(/&/g, "\\u0026"); // Échapper &
 ```
 
-### API Validation
+### Performance
 
-```javascript
-/**
- * Valide un objet thème
- */
-validateTheme(theme);
-// Retourne : { valid: boolean, errors: string[] }
-```
+| Métrique            | Valeur                                        |
+| ------------------- | --------------------------------------------- |
+| Taille fichier      | 150-200 KB                                    |
+| Temps de génération | < 200 ms                                      |
+| CSS optimisé        | ~15 KB                                        |
+| Compatible          | Chrome 90+, Firefox 88+, Safari 14+, Edge 90+ |
 
-### Format Markdown des thèmes
+### Cas d'usage pédagogiques
 
-**Structure** :
+#### Scénario 1 : Classe sans Internet
 
-```markdown
----
-name: Nom du thème
-icon: 🎨
-description: Description du thème
----
+1. Enseignant crée le thème sur PC connecté
+2. Exporte en HTML
+3. Copie sur clé USB
+4. Distribue aux élèves
 
-## Bande 1 : Titre
+#### Scénario 2 : TBI en classe
 
-- Segment 1
-- Segment 2
-- ...
+1. Exporte le thème
+2. Ouvre en plein écran (F11)
+3. Utilise pendant la séance
+4. Pas de risque de coupure
 
-## Bande 2 : Titre
+#### Scénario 3 : Devoirs à la maison
 
-- Segment 1
-- ...
-```
-
-**Caractéristiques** :
-
-- **Front matter YAML** : Métadonnées du thème
-- **Sections Markdown** : Une section par bande
-- **Listes à puces** : Un item par segment
-- **Lisible et éditable** : Les enseignants peuvent créer des thèmes manuellement
-
-### Compatibilité ancien format TXT
-
-**Format MPFH** (ancien système) :
-
-```
-MPFH<div class="phrase"><input type="text" class="bande1" value="..."/>...</div>MPFH
-```
-
-**Conversion** :
-
-- Détection automatique par marqueurs `MPFH`
-- Extraction des 3 bandes (limitation de l'ancien format)
-- Génération des métadonnées par défaut
-- Import transparent pour l'utilisateur
-
-**Limitations de l'ancien format** :
-
-- Maximum 3 bandes (vs 5 pour le nouveau)
-- Pas de métadonnées (nom, icône, description)
-- Format HTML verbeux
+1. Partage le fichier par email
+2. Élèves créent des histoires
+3. Exportent en PNG
+4. Renvoient par email
 
 ---
 
@@ -703,8 +705,6 @@ StoryBuilder (root)
     │   ThemeSelector
     │       ↓
     │   ThemeEditor
-    │       ↓
-    │   ThemeImportExport ✨ NOUVEAU
     │
     ├─→ useStoryBands() ──→ État des bandes
     │       ↓
@@ -716,7 +716,8 @@ StoryBuilder (root)
     │   ├─ RandomButton
     │   ├─ BandCountSelector
     │   ├─ FavoriteButton ──→ localStorage (favoris)
-    │   └─ ExportButton ──→ Canvas API
+    │   ├─ ExportButton ──→ Canvas API
+    │   └─ ExportThemeButton ──→ generateStandaloneHTML ⭐ NOUVEAU
     │
     └─→ Favorites ──→ localStorage (favoris)
 ```
@@ -746,55 +747,19 @@ StoryBuilder (root)
 7. BandSegment remonte (key change) → animation CSS
 ```
 
-### Import/Export de thème ✨ NOUVEAU
-
-**Flux d'export** :
+### ⭐ Export de thème (NOUVEAU)
 
 ```
-1. User clique sur bouton "Import/Export"
-2. StoryBuilder affiche ThemeImportExport
-3. User clique sur "Exporter"
-4. ThemeImportExport → exportThemeToMarkdown(currentTheme)
-5. Génération du contenu Markdown
-6. downloadThemeAsMarkdown() → Téléchargement fichier .md
-7. User reçoit le fichier sur son ordinateur
-```
-
-**Flux d'import** :
-
-```
-1. User clique sur "Sélectionner un fichier"
-2. User choisit un fichier .md ou .txt
-3. ThemeImportExport → importThemeFile(file)
-4. Détection automatique du format
-5. Parse du contenu (parseMarkdownTheme ou parseLegacyTxtTheme)
-6. Validation du thème (validateTheme)
-7. Vérification des conflits (checkThemeNameConflict)
-8a. Si conflit → Affichage dialogue de résolution
-8b. Si pas de conflit → Sauvegarde directe
-9. saveCustomTheme() → localStorage
-10. reloadCustomThemes() → Mise à jour de la liste
-11. changeTheme() → Sélection du nouveau thème
-```
-
-**Résolution de conflits** :
-
-```
-1. Conflit détecté (nom identique)
-2. Affichage du dialogue avec 2 options :
-
-   Option A : Renommer
-   ├─ Génération nom unique (generateUniqueName)
-   ├─ User peut modifier le nom proposé
-   └─ Sauvegarde avec nouveau nom
-
-   Option B : Remplacer
-   ├─ Récupération de l'ancien thème
-   ├─ Remplacement avec même ID
-   └─ Sauvegarde écrase l'ancien
-
-3. Confirmation et fermeture du dialogue
-4. Message de succès à l'utilisateur
+1. User clique sur ExportThemeButton
+2. ExportThemeButton appelle generateStandaloneHTML(theme)
+3. generateStandaloneHTML :
+   a. Échappe les données JSON du thème
+   b. Génère le HTML avec CSS inline
+   c. Crée l'application JavaScript vanilla
+   d. Retourne la string HTML complète
+4. ExportThemeButton crée le nom de fichier (slug)
+5. downloadHTMLFile télécharge le fichier
+6. Feedback visuel (spinner → succès)
 ```
 
 ---
@@ -820,7 +785,7 @@ export default defineConfig({
         },
     },
     server: {
-        port: 3000,
+        port: 3020,
         open: true,
     },
 });
@@ -902,24 +867,6 @@ Component.propTypes = {
 - Résultat prévisible pour des props identiques
 - Logique métier dans les hooks
 
-### 6. Gestion des fichiers ✨ NOUVEAU
-
-✅ **Bonnes pratiques pour File API** :
-
-```javascript
-// Utiliser async/await pour file.text()
-const content = await file.text();
-
-// Réinitialiser l'input après traitement
-event.target.value = "";
-
-// Créer des Blobs avec type MIME correct
-const blob = new Blob([content], { type: "text/markdown;charset=utf-8" });
-
-// Nettoyer les URLs d'objets
-URL.revokeObjectURL(url);
-```
-
 ---
 
 ## 🧪 Guide de test
@@ -961,59 +908,7 @@ URL.revokeObjectURL(url);
 - [ ] Icônes suggérées cliquables
 - [ ] Thème personnalisé apparaît dans la liste
 
-#### 6. Import/Export de thèmes ✨ NOUVEAU
-
-**Export** :
-
-- [ ] Bouton "Import/Export" visible et accessible
-- [ ] Export désactivé pour thèmes prédéfinis
-- [ ] Export activé pour thèmes personnalisés
-- [ ] Fichier .md téléchargé avec bon nom
-- [ ] Contenu Markdown valide et complet
-- [ ] Métadonnées correctes (nom, icône, description)
-- [ ] Toutes les bandes et segments présents
-
-**Import Markdown** :
-
-- [ ] Sélection de fichier .md fonctionne
-- [ ] Parse correctement un fichier valide
-- [ ] Message de succès affiché
-- [ ] Thème apparaît dans la liste
-- [ ] Thème automatiquement sélectionné
-- [ ] Erreur affichée si fichier invalide
-- [ ] Détection des segments manquants
-- [ ] Validation du front matter YAML
-
-**Import TXT legacy** :
-
-- [ ] Sélection de fichier .txt fonctionne
-- [ ] Parse ancien format MPFH correctement
-- [ ] Conversion en 3 bandes minimum
-- [ ] Métadonnées par défaut générées
-- [ ] Message indiquant format legacy
-- [ ] Compatibilité ascendante préservée
-
-**Gestion des conflits** :
-
-- [ ] Détection de nom en doublon
-- [ ] Dialogue de résolution affiché
-- [ ] Option "Renommer" avec nom suggéré
-- [ ] Modification du nom suggéré possible
-- [ ] Import avec nouveau nom fonctionne
-- [ ] Option "Remplacer" affiche avertissement
-- [ ] Remplacement écrase bien l'ancien thème
-- [ ] Annulation retourne à l'état initial
-- [ ] Génération de noms uniques (suffixes numériques)
-
-**Validation** :
-
-- [ ] Fichier sans front matter rejeté
-- [ ] Fichier sans bandes rejeté
-- [ ] Bandes avec <2 segments rejetées
-- [ ] Messages d'erreur explicites
-- [ ] Validation ne casse pas l'interface
-
-#### 7. Favoris
+#### 6. Favoris
 
 - [ ] Bouton étoile sauvegarde l'histoire
 - [ ] Feedback visuel "Sauvegardée !"
@@ -1021,13 +916,29 @@ URL.revokeObjectURL(url);
 - [ ] Chargement d'un favori restaure l'état
 - [ ] Suppression fonctionne
 
-#### 8. Export PNG
+#### 7. Export PNG
 
 - [ ] Export génère une image
 - [ ] Nom de fichier contient la date
 - [ ] Image contient titre + phrase complète
 - [ ] Découpage multi-lignes si phrase longue
 - [ ] Signature "micetf.fr" présente
+
+#### 8. ⭐ Export HTML standalone (NOUVEAU)
+
+- [ ] Bouton "Exporter thème HTML" visible
+- [ ] Fichier HTML se télécharge (~150-200 KB)
+- [ ] Nom de fichier correct (slug du thème)
+- [ ] **Déconnecter Internet**
+- [ ] Ouvrir le fichier HTML téléchargé
+- [ ] Toutes les fonctionnalités marchent offline :
+    - [ ] Rotation des bandes
+    - [ ] Génération aléatoire
+    - [ ] Changement nombre de bandes
+    - [ ] Export PNG
+- [ ] Animations CSS fonctionnent
+- [ ] Responsive design OK
+- [ ] Pas d'erreur console
 
 #### 9. Mode plein écran
 
@@ -1039,7 +950,6 @@ URL.revokeObjectURL(url);
 #### 10. Persistance localStorage
 
 - [ ] Thèmes personnalisés conservés après F5
-- [ ] Thèmes importés conservés après F5
 - [ ] Favoris conservés après F5
 - [ ] Dernier thème utilisé restauré au lancement
 
@@ -1050,29 +960,6 @@ URL.revokeObjectURL(url);
 - [ ] Layout adapté sur desktop (1024px+)
 - [ ] Texte lisible à toutes les tailles
 - [ ] Boutons accessibles au doigt
-
-#### 12. Tests avancés Import/Export ✨
-
-**Round-trip** :
-
-- [ ] Exporter un thème puis le réimporter
-- [ ] Données identiques après round-trip
-- [ ] Pas de perte d'information
-
-**Édition manuelle Markdown** :
-
-- [ ] Créer un .md manuellement
-- [ ] Import d'un fichier créé à la main
-- [ ] Tolérance aux variations de format
-- [ ] Espaces/indentation tolérés
-
-**Cas limites** :
-
-- [ ] Fichier vide
-- [ ] Fichier avec caractères spéciaux
-- [ ] Fichier très long (>100 segments)
-- [ ] Accents et emojis dans le contenu
-- [ ] Noms avec caractères Unicode
 
 ---
 
@@ -1086,7 +973,6 @@ URL.revokeObjectURL(url);
 4. **Pas d'impression directe** : Export PNG uniquement
 5. **Pas de sons** : Pas de feedback audio
 6. **Pas de mode sombre** : Thème clair uniquement
-7. **Parser YAML simplifié** ✨ : Supporte uniquement les métadonnées basiques (clé:valeur)
 
 ### Bugs potentiels à surveiller
 
@@ -1106,40 +992,28 @@ URL.revokeObjectURL(url);
 
     - Solution : Limiter à 5 bandes, 12 segments max
 
-5. **Import de fichiers volumineux** ✨ : Peut bloquer l'interface
+5. **Export HTML avec caractères spéciaux** : Risque XSS
 
-    - Solution actuelle : Pas de limite implémentée
-    - Solution future : Ajouter vérification de taille (max 1MB)
-
-6. **Encodage non-UTF8** ✨ : Peut causer des erreurs de lecture
-    - Solution : Documenter l'exigence UTF-8
-    - Les navigateurs modernes gèrent généralement UTF-8 par défaut
+    - Solution : Échappement JSON déjà implémenté
 
 ---
 
 ## 🚀 Roadmap et évolutions futures
 
-### Priorité 1 : Import/Export amélioré ✨
+### Priorité 1 : Export HTML (✅ TERMINÉ - 2026-02-07)
 
-- [x] Export au format Markdown
-- [x] Import Markdown avec validation
-- [x] Rétrocompatibilité ancien format TXT
-- [x] Gestion des conflits de noms
-- [ ] **Parser YAML complet** : Intégrer bibliothèque `js-yaml` pour métadonnées avancées
-- [ ] **Validation stricte** : Schéma JSON pour valider les thèmes
-- [ ] **Prévisualisation avant import** : Afficher le thème avant de l'importer
-- [ ] **Import par URL** : Importer depuis un lien web
-- [ ] **Batch import** : Importer plusieurs thèmes à la fois
-- [ ] **Export multi-thèmes** : Exporter plusieurs thèmes en un seul fichier
+- [x] Génération fichier HTML standalone
+- [x] CSS Tailwind optimisé embarqué
+- [x] Application JavaScript vanilla
+- [x] Export PNG dans le fichier standalone
+- [x] 100% offline
 
-### Priorité 2 : Partage et collaboration
+### Priorité 2 : Améliorations export HTML
 
-- [ ] **Hub de thèmes** : Plateforme de partage communautaire
-- [ ] **QR Code** : Générer QR code pour partage rapide
-- [ ] **Export vers Google Drive** : Intégration Google Drive API
-- [ ] **Versioning des thèmes** : Historique des modifications
-- [ ] **Commentaires et notes** : Ajouter des annotations aux thèmes
-- [ ] **Catégories et tags** : Organiser les thèmes par niveau/matière
+- [ ] Notification toast après export réussi
+- [ ] Option pour personnaliser le nom du fichier
+- [ ] Prévisualisation avant export
+- [ ] Export de plusieurs thèmes dans un seul HTML
 
 ### Priorité 3 : Améliorations UX
 
@@ -1148,16 +1022,16 @@ URL.revokeObjectURL(url);
 - [ ] **Animation 3D avancée** : Bandes cylindriques 3D
 - [ ] **Mode sombre** : Thème sombre avec switch
 - [ ] **Partage direct** : Email, réseaux sociaux, QR code
-- [ ] **Templates de thèmes** : Modèles prêts à personnaliser
 
 ### Priorité 4 : Fonctionnalités avancées
 
+- [ ] **Import/Export de thèmes** : Fichiers JSON
+- [ ] **Galerie de thèmes** : Partage communautaire
 - [ ] **Historique d'annulation** : Ctrl+Z / Ctrl+Y
 - [ ] **Mode collaboratif** : Plusieurs utilisateurs en temps réel
 - [ ] **Impression PDF** : Export multi-histoires
 - [ ] **Statistiques** : Compteur de phrases générées
 - [ ] **Défis quotidiens** : Phrase imposée à compléter
-- [ ] **Mode enseignant** : Tableau de bord avec analytics
 
 ### Priorité 5 : Accessibilité
 
@@ -1172,9 +1046,8 @@ URL.revokeObjectURL(url);
 - [ ] **Lazy loading** : Chargement différé des modales
 - [ ] **Code splitting** : Découpage des bundles
 - [ ] **Service Worker** : Mode offline (PWA)
-- [ ] **IndexedDB** : Alternative à localStorage pour gros volumes
+- [ ] **IndexedDB** : Alternative à localStorage
 - [ ] **Optimisation images** : WebP, compression
-- [ ] **Compression des exports** : ZIP pour multi-thèmes
 
 ---
 
@@ -1186,14 +1059,6 @@ URL.revokeObjectURL(url);
 - [Vite Documentation](https://vitejs.dev/)
 - [Tailwind CSS Documentation](https://tailwindcss.com/)
 - [MDN Web APIs](https://developer.mozilla.org/en-US/docs/Web/API)
-- [File API](https://developer.mozilla.org/en-US/docs/Web/API/File)
-- [Blob API](https://developer.mozilla.org/en-US/docs/Web/API/Blob)
-
-### Markdown et YAML
-
-- [Markdown Guide](https://www.markdownguide.org/)
-- [YAML Specification](https://yaml.org/)
-- [Front Matter](https://jekyllrb.com/docs/front-matter/)
 
 ### Inspirations pédagogiques
 
@@ -1245,7 +1110,7 @@ chore: Tâches de maintenance
 2. **PropTypes** : Validation systématique
 3. **JSDoc** : Documentation des fonctions complexes
 4. **Nommage** : camelCase pour variables/fonctions, PascalCase pour composants
-5. **Indentation** : 2 espaces (config Prettier)
+5. **Indentation** : 4 espaces (config actuelle du projet)
 
 ---
 
@@ -1256,8 +1121,6 @@ chore: Tâches de maintenance
 - Site principal : [https://micetf.fr](https://micetf.fr)
 - Email : webmaster@micetf.fr
 - Tutoriels vidéo : Chaîne YouTube MiCetF
-- **Guide Import/Export** ✨ : Voir `docs/GUIDE-IMPORT-EXPORT.md`
-- **Exemple de thème** ✨ : Voir `docs/exemple-theme-pirates.md`
 
 ### Pour les développeurs
 
@@ -1294,12 +1157,8 @@ in the Software without restriction...
 | **PropTypes**           | Système de validation des props en JavaScript                   |
 | **useMemo**             | Hook React pour mémoriser une valeur calculée                   |
 | **useCallback**         | Hook React pour mémoriser une fonction                          |
-| **Front matter**        | ✨ Métadonnées YAML au début d'un fichier Markdown              |
-| **Markdown**            | ✨ Langage de balisage léger pour formater du texte             |
-| **Parser**              | ✨ Analyseur syntaxique qui transforme du texte en structure    |
-| **Blob**                | ✨ Objet JavaScript représentant des données binaires brutes    |
-| **MIME type**           | ✨ Identifiant du type de contenu d'un fichier                  |
-| **Round-trip**          | ✨ Export puis import pour tester la conservation des données   |
+| **Standalone**          | Fichier autonome fonctionnant sans dépendances externes         |
+| **Offline**             | Fonctionnement sans connexion Internet                          |
 
 ---
 
@@ -1307,12 +1166,12 @@ in the Software without restriction...
 
 ### Statistiques actuelles
 
-- **Composants React** : 16 (+1) ✨
+- **Composants React** : 16 (+ ExportThemeButton)
 - **Hooks personnalisés** : 2
-- **Modules utilitaires** : 2 (+1) ✨
+- **Utilitaires** : 2 (+ generateStandaloneHTML)
 - **Thèmes prédéfinis** : 6
-- **Lignes de code** : ~3200 (+700) ✨
-- **Taille du bundle** : ~160 KB (gzipped) (+10 KB) ✨
+- **Lignes de code** : ~3200
+- **Taille du bundle** : ~150 KB (gzipped)
 - **Temps de build** : ~5 secondes
 - **Compatibilité navigateurs** : Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
 
@@ -1327,51 +1186,51 @@ Avec les thèmes par défaut (6 segments/bande) :
 | 4      | 1 296        | 6⁴      |
 | 5      | 7 776        | 6⁵      |
 
-### Formats supportés ✨ NOUVEAU
-
-| Format   | Extension | Support      | Direction     |
-| -------- | --------- | ------------ | ------------- |
-| Markdown | .md       | Complet      | Import/Export |
-| TXT      | .txt      | Legacy       | Import seul   |
-| JSON     | .json     | localStorage | Interne       |
-| PNG      | .png      | Image        | Export phrase |
-
 ---
 
-## 🔐 Sécurité et bonnes pratiques
+## 📝 Changelog
 
-### Validation des entrées ✨
+### Version 1.1.0 - 2026-02-07
 
-- **Sanitization des noms de fichiers** : Caractères interdits retirés
-- **Validation MIME types** : Vérification des extensions
-- **Taille maximale** : Pas de limite actuellement (à implémenter)
-- **Injection de code** : Pas de `eval()` ou `innerHTML` avec données utilisateur
+**✨ Nouvelles fonctionnalités**
 
-### Données sensibles
+- Ajout de l'export de thème en HTML standalone
+- Nouveau composant `ExportThemeButton`
+- Nouveau utilitaire `generateStandaloneHTML`
+- CSS Tailwind optimisé embarqué (~15 KB)
+- Application JavaScript vanilla pour fichiers exportés
+- Fonctionnement 100% offline garanti
 
-- **Pas de données personnelles** : Aucune collecte d'informations utilisateur
-- **localStorage uniquement** : Pas de transmission réseau
-- **Thèmes publics** : Attention au partage de contenus inappropriés
+**🔒 Sécurité**
 
-### Recommandations
+- Échappement XSS des données JSON dans l'export HTML
+- Validation des noms de fichiers (slug)
 
-1. **Ne pas inclure** dans les thèmes :
+**📚 Documentation**
 
-    - Informations personnelles
-    - Contenus offensants ou inappropriés
-    - Données confidentielles
+- Documentation complète de l'export HTML
+- Guide d'installation rapide
+- Exemples de cas d'usage pédagogiques
 
-2. **Vérifier** les thèmes importés :
-    - Source fiable
-    - Contenu adapté à l'âge des élèves
-    - Qualité linguistique
+**🐛 Corrections**
+
+- Aucune correction dans cette version (nouvelle fonctionnalité uniquement)
+
+### Version 1.0.0 - 2026-01-XX
+
+- Version initiale de la Fabrique à Histoires
+- 6 thèmes prédéfinis
+- Système de favoris
+- Éditeur de thèmes personnalisés
+- Export PNG des phrases
+- Mode plein écran
 
 ---
 
 **Document généré le** : 2026-02-07  
-**Version de l'application** : 1.1.0 ✨  
-**Dernière mise à jour** : Ajout de l'import/export de thèmes  
-**Auteur** : MiCetF - Frédéric MISERY
+**Version de l'application** : 1.1.0  
+**Auteur** : MiCetF - Frédéric MISERY  
+**Dernière mise à jour** : 2026-02-07
 
 ---
 
