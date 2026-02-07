@@ -1,465 +1,316 @@
 # FICHE OUTIL PÉDAGOGIQUE
-## Fabrique à Histoires – Application web pour la production d'écrits et l'étude de la langue
+
+## Fabrique à Histoires – Application web pour la production d’écrits et l’étude de la langue
 
 ---
 
-## 🎯 PRÉSENTATION DE L'OUTIL
+## 1. Présentation de l’outil
 
-### Qu'est-ce que c'est ?
+### Qu’est-ce que c’est ?
 
-**Fabrique à Histoires** est une application web interactive qui permet aux élèves de créer des phrases amusantes en combinant des segments de texte disposés sur 5 bandes horizontales rotatives. Inspirée du principe du « cadavre exquis », elle offre un support ludique et structurant pour travailler la syntaxe et la production d'écrits.
+**Fabrique à Histoires** est une application web interactive qui permet de générer des phrases en combinant des segments de texte répartis sur 5 bandes horizontales. Le principe est inspiré du « cadavre exquis », mais avec une structure syntaxique stable pensable pour l’enseignement de la phrase.
+
+L’outil vise à :
+
+- soutenir la **production d’écrits** (amorce, contraintes, idées) ;
+- travailler la **structure de la phrase simple** (sujet, verbe, compléments) ;
+- favoriser une **manipulation ludique de la langue**.
 
 ### Public visé
-- **Cycles 2 et 3** : GS (découverte) à CM2
-- Utilisable en grand groupe (TBI), en ateliers (tablettes/ordinateurs) ou en autonomie
 
-### Fonctionnalités clés
-- 6 thèmes prédéfinis (Classique, Animaux, École, Vacances, Contes, Espace)
-- Création de thèmes personnalisés par l'enseignant
-- Export des phrases en image PNG
-- Export du thème complet en fichier HTML standalone (utilisable hors connexion)
-- Sauvegarde de phrases favorites
-- Fonctionnement 100% gratuit et sans collecte de données
+- Cycles 2 et 3 : du CP au CM2 (possible découverte GS avec forte médiation).
+- Contextes d’usage :
+    - collectif sur TNI/TBI ;
+    - ateliers sur tablettes/PC ;
+    - travail en autonomie (centre d’écriture, APC, devoirs).
+
+### Fonctionnalités principales
+
+- Thèmes prédéfinis : Classique, Animaux, École, Vacances, Contes, Espace.
+- Thèmes personnalisables par l’enseignant.
+- Export de phrases en image (PNG).
+- Export de thèmes en fichier HTML autonome (usage hors ligne).
+- Sauvegarde de phrases favorites.
+- Interface pensée pour les élèves : simple, sans inscription, sans collecte de données.
 
 ---
 
-## 📋 LIENS AVEC LES PROGRAMMES
+## 2. Deux publics, deux espaces : élèves / enseignants
+
+En s’appuyant sur les travaux d’André Tricot sur la **charge cognitive**, la fiche distingue clairement deux usages.
+
+### Côté élèves : une interface dépouillée
+
+Objectif : limiter la **charge cognitive extrinsèque** pour que l’essentiel de l’effort mental porte sur la compréhension et la manipulation de la phrase.
+
+Dans l’interface élève :
+
+- pas de textes d’aide longs ;
+- pas de pop-up, pas de tutoriel intrusif ;
+- uniquement les éléments utiles à l’activité (bandes, boutons d’action).
+
+L’enseignant reste le médiateur : c’est lui qui explique, scénarise, donne du sens.
+
+### Côté enseignants : un espace dédié
+
+L’accès à la documentation pédagogique **ne doit pas perturber la tâche des élèves**.
+
+Plusieurs points d’entrée possibles :
+
+- un lien discret en bas de page (type « 👨‍🏫 Espace enseignant ») ouvrant un **nouvel onglet** ;
+- une **page dédiée enseignants** (URL à diffuser dans vos supports de formation / ENT) ;
+- un **onglet “Guide pédagogique” dans l’éditeur de thèmes**, réservé à la préparation.
+
+Dans cet espace enseignant, on retrouve :
+
+- le guide pédagogique synthétique (version web) ;
+- la fiche outil complète en PDF/Markdown téléchargeable ;
+- des exemples d’usages et de thèmes.
+
+---
+
+## 3. Liens avec les programmes (cycles 2 et 3)
 
 ### Cycle 2 (CP-CE1-CE2)
 
-#### Langage oral
-- Participer à des échanges dans des situations diversifiées
-- Adopter une attitude critique par rapport à son propre langage et celui des autres
-- **Application** : Justifier oralement la grammaticalité ou l'absurdité des phrases générées
+**Langage oral**
 
-#### Écriture
-- Produire des écrits en commençant à s'approprier une démarche
-- Réviser et améliorer ses écrits
-- **Application** : Utiliser les phrases générées comme amorces d'écriture, les recopier, les illustrer
+- Participer à des échanges, justifier un point de vue.
+- Décrire, raconter, expliquer.
+- Avec l’outil : argumenter sur la « bonne » phrase, expliquer pourquoi une phrase a du sens ou non.
 
-#### Étude de la langue (grammaire)
-- Identifier les principaux constituants d'une phrase simple en relation avec sa cohérence sémantique
-- Comprendre la notion de phrase : une phrase commence par une majuscule, finit par un point
-- Repérer le verbe d'une phrase et son sujet
-- **Application** : Observer que chaque bande correspond à une fonction (sujet / verbe / complément)
+**Écriture**
+
+- Copier et écrire des phrases simples puis des textes courts.
+- Améliorer un écrit, enrichir, corriger.
+- Avec l’outil : utiliser des phrases comme amorces, les recopier, les prolonger, les illustrer.
+
+**Étude de la langue**
+
+- Comprendre ce qu’est une phrase : majuscule, point, sens.
+- Repérer verbe et sujet, identifier quelques compléments.
+- Avec l’outil : relier chaque bande à une question (Qui ? Fait quoi ? Quoi ? Où ? Quand ?).
 
 ### Cycle 3 (CM1-CM2-6e)
 
-#### Écriture
-- Produire des textes en mettant en œuvre une démarche de production
-- Utiliser l'écrit pour structurer sa pensée et son savoir
-- **Application** : Générer plusieurs phrases sur un même thème pour construire un paragraphe cohérent
+**Écriture**
 
-#### Étude de la langue (grammaire)
-- Analyser le fonctionnement de la phrase simple
-- Différencier les compléments essentiels et les compléments circonstanciels
-- Maîtriser l'accord du verbe avec son sujet dans des situations variées
-- **Application** : Manipuler les bandes pour observer l'effet des transformations sur la phrase
+- Produire des textes narratifs, descriptifs, explicatifs.
+- Mettre en œuvre une démarche de production (brouillon, révision, correction).
+- Avec l’outil : générer des phrases liées à un thème pour construire un paragraphe ou un récit.
 
-#### Culture littéraire et artistique
-- Découvrir des genres et formes de textes
-- Comprendre les codes et structures des contes
-- **Application** : Créer des thèmes inspirés d'œuvres lues en classe
+**Étude de la langue**
 
----
+- Approfondir l’analyse de la phrase simple.
+- Travailler les accords (sujet/verbe), distinguer compléments essentiels/circonstanciels.
+- Avec l’outil : manipuler les bandes (ajouter, retirer, déplacer) pour observer effets de sens.
 
-## 🏗️ STRUCTURE GRAMMATICALE DES THÈMES
+**Culture littéraire**
 
-Chaque thème respecte une organisation syntaxique stable et explicite :
-
-| Bande | Fonction grammaticale | Question | Exemple |
-|-------|----------------------|----------|---------|
-| **1** | Groupe nominal sujet | Qui ? | Le petit chat |
-| **2** | Verbe transitif (présent) | Fait quoi ? | mange |
-| **3** | Complément d'objet direct | Quoi ? | une grosse pomme rouge |
-| **4** | Complément circonstanciel de lieu | Où ? | dans la forêt enchantée |
-| **5** | CC temps/manière/but ou finale | Quand/Comment/Pourquoi ? | avant le coucher du soleil |
-
-**Point pédagogique clé** : Cette structure permet aux élèves de :
-- Visualiser concrètement l'organisation de la phrase simple
-- Comprendre que les éléments ne sont pas interchangeables entre les bandes
-- Identifier progressivement les fonctions grammaticales
+- Entrer dans les genres (conte, récit de vie, science-fiction, etc.).
+- Avec l’outil : utiliser les thèmes « Contes », « Espace », ou des thèmes créés à partir d’œuvres lues.
 
 ---
 
-## 💡 PROPOSITIONS D'USAGES PÉDAGOGIQUES
+## 4. Structure grammaticale des thèmes
 
-### USAGE 1 : Découverte de la structure de la phrase (Cycle 2 - CP/CE1)
+Tous les thèmes fournis sont construits sur une structure stable :
 
-**Dispositif** : Séance collective au TBI (20-30 min)
+| Bande | Fonction grammaticale             | Question                     | Exemple                    |
+| ----- | --------------------------------- | ---------------------------- | -------------------------- |
+| 1     | Groupe nominal sujet              | Qui ?                        | Le petit chat              |
+| 2     | Verbe transitif (présent)         | Fait quoi ?                  | mange                      |
+| 3     | Complément d’objet direct (COD)   | Quoi ?                       | une grosse pomme rouge     |
+| 4     | Complément circonstanciel de lieu | Où ?                         | dans la forêt enchantée    |
+| 5     | CC de temps/manière/but/finale    | Quand ? Comment ? Pourquoi ? | avant le coucher du soleil |
 
-**Déroulement** :
-1. **Phase de découverte** (5 min)
-   - Présenter l'application avec le thème « Classique »
-   - Laisser les élèves générer quelques phrases aléatoirement
-   - Observer : « Qu'est-ce que vous remarquez ? »
+Intentions pédagogiques :
 
-2. **Phase d'analyse guidée** (10 min)
-   - Faire tourner uniquement la bande 1 : « Qu'est-ce qui change ? C'est toujours une phrase ? »
-   - Introduire la question : « Qui ? » → Ce sont les sujets
-   - Répéter avec chaque bande en associant une question
-   - Bande 2 : « Fait quoi ? » → verbes
-   - Bande 3 : « Quoi ? » → ce qu'on mange/cherche/découvre
-   - Bande 4 : « Où ? » → les lieux
-   - Bande 5 : « Quand/pourquoi ? » → la fin de l'histoire
-
-3. **Phase de manipulation** (10 min)
-   - Les élèves viennent changer une bande à tour de rôle
-   - Question systématique : « La phrase a-t-elle du sens ? »
-   - Exporter 2-3 phrases et les afficher
-
-**Trace écrite** : Copier une phrase générée et colorier chaque partie selon sa fonction
-
-**Prolongement** : Créer collectivement un affichage « Les 5 parties de la phrase »
+- donner un **repère visuel et stable** sur la structure de la phrase ;
+- faciliter le passage vers les notions de **fonctions** et de **groupes de mots** ;
+- assurer que toutes les combinaisons restent grammaticalement correctes et interprétables.
 
 ---
 
-### USAGE 2 : Production d'écrits à partir d'une phrase-amorce (Cycles 2 et 3)
+## 5. Usages pédagogiques principaux
 
-**Dispositif** : Atelier tournant ou séance décrochée (30-45 min)
+### Usage 1 – Découverte de la phrase (CP/CE1)
 
-**Déroulement** :
-1. **Génération de la phrase** (5 min)
-   - En binôme ou seul, l'élève génère une phrase avec le thème de son choix
-   - Il peut utiliser le bouton « Surprise » ou choisir manuellement
-   - La phrase est exportée en PNG ou recopiée sur le cahier
+**Objectif** : comprendre qu’une phrase est composée de différentes parties, chacune ayant un rôle.
 
-2. **Expansion de la phrase** (20-30 min)
-   - Cycle 2 : Écrire 2-3 phrases pour raconter la suite
-   - Cycle 3 : Écrire un paragraphe entier (dialogue, description, suite d'actions)
-   - Consigne : « Raconte ce qui se passe avant, pendant ou après »
+**Modalité** : séance collective (TBI, 20–30 min).
 
-3. **Illustration** (10 min)
-   - Dessiner une scène inspirée de la phrase ou du texte produit
+**Étapes** :
 
-4. **Partage** (temps collectif)
-   - Lecture de quelques productions
-   - Affichage ou compilation dans un « livre de classe »
+1. Générer quelques phrases (thème Classique ou Animaux).
+2. Interroger : « Qu’est-ce qui change ? Qu’est-ce qui reste ? »
+3. Associer à chaque bande une question :
+    - Bande 1 : Qui ? (sujet)
+    - Bande 2 : Fait quoi ? (verbe)
+    - Bande 3 : Quoi ? (COD)
+    - Bande 4 : Où ?
+    - Bande 5 : Quand ? Pourquoi ?
+4. Colorier collectivement une phrase (au tableau ou sur une capture) en 5 couleurs.
+5. Proposer une trace écrite simple : une phrase + code couleur + questions.
+
+**Variantes** :
+
+- Réduire à 2 ou 3 bandes pour les élèves les plus fragiles.
+- Faire venir les élèves au TBI pour modifier une seule bande et commenter.
+
+---
+
+### Usage 2 – Production d’écrits à partir d’une phrase-amorce (CE1–CM2)
+
+**Objectif** : écrire un texte à partir d’une phrase générée.
+
+**Modalités** : ateliers, binômes, 30–45 min.
+
+**Étapes** :
+
+1. Chaque élève ou binôme génère une phrase (choix ou bouton « Surprise » limité à 3 essais).
+2. Il recopie la phrase sur son cahier ou l’imprime (export PNG).
+3. Consigne d’écriture :
+    - Cycle 2 : ajouter 2 ou 3 phrases pour raconter ce qui se passe.
+    - Cycle 3 : écrire un paragraphe (situation initiale, péripéties ou dialogue).
+4. Relecture guidée (vérifier ponctuation, accords, cohérence).
+5. Mise en commun (lecture, affichage, livret de classe).
 
 **Différenciation** :
-- Élèves fragiles : thème simple (Animaux, École), phrase courte à compléter
-- Élèves avancés : créer un dialogue entre deux personnages issus de phrases différentes
 
-**Évaluation** : Cohérence textuelle, enrichissement lexical, correction orthographique
-
----
-
-### USAGE 3 : Étude de la langue – Manipulations grammaticales (Cycle 3)
-
-**Dispositif** : Séance d'étude de la langue (45 min)
-
-**Objectif** : Observer les transformations syntaxiques et les accords
-
-**Déroulement** :
-
-#### Séance A : Les accords sujet-verbe
-
-1. **Situation de départ** (10 min)
-   - Thème « École », générer une phrase avec un sujet au singulier
-   - Exemple : « La maîtresse dessine une belle histoire dans la classe »
-   - Faire tourner la bande 1 jusqu'à un sujet au pluriel : « Les élèves de CE1 »
-   - Question : « Qu'est-ce qui doit changer dans la phrase ? »
-
-2. **Observation et manipulation** (15 min)
-   - Les élèves identifient que le verbe doit s'accorder
-   - Écrire au tableau les deux versions :
-     - La maîtresse dessine → sujet singulier
-     - Les élèves de CE1 dessinent → sujet pluriel
-   - Générer d'autres phrases et systématiser
-
-3. **Entraînement** (15 min)
-   - Par groupes de 2, les élèves génèrent 5 phrases
-   - Pour chaque phrase, ils doivent identifier le sujet et justifier l'accord du verbe
-   - Trace écrite : tableau Singulier / Pluriel avec exemples
-
-4. **Bilan** (5 min)
-   - « Qu'avez-vous appris aujourd'hui ? »
-   - Formulation de la règle d'accord
-
-#### Séance B : Les compléments circonstanciels (déplaçables et supprimables)
-
-1. **Situation de départ** (10 min)
-   - Thème « Vacances », générer une phrase complète
-   - Exemple : « Mes parents visitent un musée passionnant pendant l'été »
-
-2. **Manipulation** (20 min)
-   - Désactiver la bande 4 (réduire à 4 bandes) : « La phrase a-t-elle encore du sens ? »
-   - Désactiver la bande 5 (réduire à 3 bandes) : « Et maintenant ? »
-   - Conclusion : Certains éléments sont supprimables (CC), d'autres non (COD)
-   - Faire tester avec d'autres phrases
-
-3. **Déplacement** (10 min)
-   - Réécrire la phrase en déplaçant les compléments :
-     - « Pendant l'été, mes parents visitent un musée passionnant »
-     - « Mes parents, pendant l'été, visitent un musée passionnant »
-   - Observer : Les CC peuvent bouger dans la phrase
-
-4. **Trace écrite** (5 min)
-   - Définition des compléments circonstanciels
-   - Test : supprimable et déplaçable
+- Proposer des aides à la planification (images séquentielles, mots outils).
+- Imposer des contraintes (temps, connecteurs, type de phrase) pour les élèves avancés.
 
 ---
 
-### USAGE 4 : Autonomie et différenciation (Tous niveaux)
+### Usage 3 – Étude de la langue : manipulations (CM1/CM2)
 
-**Dispositif** : Centre d'autonomie / plan de travail (15-20 min par session)
+**Objectif** : travailler les accords et la notion de complément.
 
-**Organisation matérielle** :
-- Application ouverte sur 2-3 ordinateurs ou tablettes
-- Fichier HTML du thème exporté (fonctionne hors connexion)
-- Fiche de consignes plastifiée
+**Exemple : accords sujet/verbe**
 
-**Activités proposées** (au choix selon le niveau) :
+1. Générer une phrase avec un sujet singulier puis remplacer par un sujet pluriel (bande 1).
+2. Amener à constater la modification orthographique du verbe (bande 2).
+3. Relever et comparer plusieurs couples de phrases.
+4. Construire la règle avec les élèves.
 
-#### Pour le Cycle 2
-- [ ] Générer 3 phrases et les recopier en respectant la ponctuation
-- [ ] Dessiner une des phrases générées
-- [ ] Trouver la phrase la plus drôle et l'expliquer à un camarade
-- [ ] Compter le nombre de mots de chaque phrase
+**Exemple : compléments essentiels / circonstanciels**
 
-#### Pour le Cycle 3
-- [ ] Générer 5 phrases sur le même thème et écrire un petit texte
-- [ ] Choisir une phrase et la transformer (changer le temps, le genre, le nombre)
-- [ ] Créer un thème personnalisé en lien avec une lecture suivie
-- [ ] Trouver les fonctions grammaticales de chaque partie de la phrase
-
-**Auto-évaluation** :
-- J'ai réussi à utiliser l'application seul(e) ✓
-- J'ai produit des phrases correctes ✓
-- J'ai enrichi mon texte avec des détails ✓
+1. Générer une phrase complète.
+2. Supprimer virtuellement la bande 5 puis la bande 4 : la phrase garde-t-elle un sens acceptable ?
+3. Supprimer la bande 3 : la phrase reste-t-elle correcte ?
+4. Faire expliciter : certains éléments sont **indispensables** (COD), d’autres **ajoutent des précisions** (CC).
 
 ---
 
-### USAGE 5 : Création collaborative de ressources (Cycle 3)
+### Usage 4 – Autonomie et plans de travail
 
-**Dispositif** : Projet de classe sur 3-4 séances (1h chacune)
+**Objectif** : soutenir l’autonomie en production d’écrits et l’entraînement à la phrase.
 
-**Objectif** : Créer un thème personnalisé en lien avec un projet (lecture suivie, sortie scolaire, période historique, etc.)
+Exemples de consignes sur fiche d’atelier :
 
-**Déroulement** :
-
-#### Séance 1 : Exploration et choix du thème
-- Lecture collective d'une œuvre ou préparation d'un projet
-- Discussion : « Quels personnages, lieux, actions pourrions-nous mettre dans notre Fabrique à Histoires ? »
-- Vote sur le thème à créer (ex. « Le Petit Prince », « Notre voyage au musée », « Les chevaliers »)
-
-#### Séance 2 : Collecte des segments
-- Par groupes de 5 (un groupe par bande)
-- Chaque groupe doit proposer 6 à 8 segments pour sa bande
-- Contrainte : respecter la fonction grammaticale de la bande
-- Mise en commun et validation collective
-
-#### Séance 3 : Création du thème dans l'éditeur
-- L'enseignant ou un élève référent entre les segments dans l'éditeur de l'application
-- Tests collectifs : générer plusieurs phrases pour vérifier la cohérence
-- Ajustements si nécessaire
-
-#### Séance 4 : Utilisation et valorisation
-- Chaque élève génère 2-3 phrases avec le thème créé
-- Production d'un texte plus long à partir d'une phrase
-- Compilation des textes dans un livret de classe
-- Export du thème en HTML pour le partager aux familles
-
-**Compétences travaillées** :
-- Travail collaboratif et négociation
-- Analyse grammaticale (respecter les fonctions)
-- Réinvestissement lexical d'une œuvre ou d'un projet
-- Autonomie et responsabilisation
+- Cycle 2 :
+    - Génère 3 phrases et recopie-les en respectant la majuscule et le point.
+    - Choisis ta phrase préférée et dessine-la.
+- Cycle 3 :
+    - Génère 5 phrases sur le même thème et écris un petit texte qui les relie.
+    - Choisis une phrase et réécris-la au passé ou au futur.
+    - Identifie le sujet, le verbe et les compléments.
 
 ---
 
-## 🔧 FONCTIONNALITÉS TECHNIQUES UTILES
+### Usage 5 – Projet de classe : créer un thème (Cycle 3)
 
-### Bouton « Surprise » (génération aléatoire)
-- **Usage** : Découverte rapide, déblocage de l'écriture, stimulation de l'imaginaire
-- **Conseil** : Limiter à 3-4 surprises puis demander un choix délibéré (éviter la passivité)
+**Objectif** : faire réfléchir les élèves à la structure de la phrase en les impliquant dans la création d’un thème.
 
-### Sélecteur de nombre de bandes (2 à 5)
-- **Usage pédagogique** : Adapter la complexité selon le niveau
-  - 2 bandes (CP début d'année) : Sujet + Verbe
-  - 3 bandes (CP/CE1) : Sujet + Verbe + COD
-  - 4-5 bandes (CE1-CM2) : Phrase complète avec circonstants
+**Étapes de projet** :
 
-### Export PNG
-- **Usage** : Impression, affichage, insertion dans un traitement de texte
-- **Conseil** : Faire annoter l'image imprimée (coloriage des fonctions, ajout de pictogrammes)
-
-### Sauvegarde en favoris
-- **Usage** : Conserver des phrases-amorces pour y revenir plus tard
-- **Conseil** : Créer un « carnet de phrases préférées » individuel ou collectif
-
-### Export HTML du thème
-- **Usage** : Utilisation hors connexion, partage aux familles, usage sur clé USB
-- **Conseil** : Idéal pour les classes sans connexion stable ou pour les devoirs à la maison
-
-### Éditeur de thèmes personnalisés
-- **Usage** : Création par l'enseignant ou par les élèves en projet
-- **Conseil** : Tester toutes les combinaisons avant de valider le thème
+1. Choisir un univers (lecture suivie, sortie, période historique).
+2. Répartir la classe en 5 groupes (un par bande/fonction).
+3. Chaque groupe propose 6–8 segments en respectant sa fonction (sujets, verbes transitifs, COD, lieux, finales).
+4. Mise en commun, tri et réécriture pour homogénéiser longueurs et niveau de langue.
+5. Saisie des segments dans l’éditeur de thèmes.
+6. Test collectif : générer des phrases, vérifier qu’elles sont correctes et cohérentes.
+7. Utiliser ensuite le thème pour des productions d’écrits.
 
 ---
 
-## 📊 ÉVALUATION DES ÉLÈVES
+## 6. Espace enseignant et intégration de la fiche outil
 
-### Grille d'observation (Cycle 2)
+### Principes UX (inspirés de Tricot)
 
-| Compétence observée | Acquis | En cours | À renforcer |
-|---------------------|--------|----------|-------------|
-| Utilise l'application de manière autonome | | | |
-| Identifie les différentes parties de la phrase | | | |
-| Produit une phrase grammaticalement correcte | | | |
-| Recopie une phrase en respectant la ponctuation | | | |
-| Enrichit la phrase avec des éléments de son choix | | | |
+- **Ne pas surcharger l’espace élève** : pas de texte pédagogique dans l’interface principale.
+- **Séparer les situations d’activité** :
+    - situation d’apprentissage des élèves ;
+    - situation de préparation/formation des enseignants.
+- **Présenter les informations aux enseignants de façon progressive** (affichages repliables, onglets, PDF).
 
-### Grille d'évaluation production d'écrits (Cycle 3)
+### Entrées recommandées vers la documentation
 
-| Critère | Points |
-|---------|--------|
-| La phrase générée est cohérente et bien recopiée | /2 |
-| Le texte produit est en lien avec la phrase-amorce | /3 |
-| Le texte comporte au moins 5 phrases correctes | /3 |
-| Le vocabulaire est varié et précis | /4 |
-| L'orthographe grammaticale est maîtrisée | /4 |
-| La présentation est soignée (illustration, mise en page) | /4 |
-| **Total** | **/20** |
+1. **Lien discret “Espace enseignant”** en bas de l’application
+
+    - Texte + petite icône (👨‍🏫), couleur peu contrastée.
+    - Ouvre un **nouvel onglet** pour ne pas couper la session en cours.
+
+2. **Page web “Enseignants” dédiée**
+
+    - Présentation rapide de l’outil.
+    - Accès à :
+        - guide pédagogique synthétique (web) ;
+        - fiche outil complète (PDF) ;
+        - modèles de séquences, grilles d’évaluation.
+
+3. **Onglet “Guide pédagogique” dans l’éditeur de thèmes**
+    - Réservé à la phase de préparation.
+    - Contenus sous forme d’**accordéons** :
+        - Programmes et objectifs
+        - Structure des 5 bandes
+        - Usages possibles
+        - Conseils pour créer un thème
+        - Exemples de séances
+    - Bouton de téléchargement de la fiche complète.
 
 ---
 
-## ⚙️ CONSEILS PRATIQUES
+## 7. Conseils d’usage, différenciation et évaluation
 
-### Gestion de classe
+### Conseils pratiques
 
-**Avant la première utilisation** :
-- Tester l'application vous-même pour en comprendre toutes les fonctionnalités
-- Préparer une démonstration rapide (5 min max) au TBI
-- Anticiper les questions techniques des élèves
-
-**Installation** :
-- En ligne : ouvrir directement l'URL
-- Hors ligne : télécharger le fichier HTML du thème et l'ouvrir dans un navigateur
-- Pas d'installation, pas de compte, pas de connexion requise
-
-**Organisation matérielle** :
-- TBI : parfait pour les séances collectives
-- Ordinateurs/tablettes : par binômes en atelier (favorise les échanges)
-- À la maison : partager le fichier HTML exporté par mail ou via l'ENT
+- Limiter le nombre de clics sur « Surprise » (éviter un usage purement ludique et passif).
+- Verbaliser systématiquement la structure : « Qui ? Fait quoi ? Quoi ? Où ? Quand ? ».
+- Prévoir des temps d’**institutionnalisation** : construction de traces écrites (affichages, schémas de phrase).
+- Tester les thèmes personnalisés avant usage en classe.
 
 ### Différenciation
 
-**Pour les élèves en difficulté** :
-- Réduire le nombre de bandes (2-3)
-- Thèmes simples (Animaux, École)
-- Travail en binôme tutoré
-- Recopie uniquement (pas de production supplémentaire dans un premier temps)
+- Réduire le nombre de bandes pour des élèves en difficulté (2–3 bandes).
+- Proposer des tâches plus complexes (transformation de phrases, changement de temps) pour les élèves avancés.
+- Avec des élèves allophones : s’appuyer sur les images mentales générées par les phrases, articuler systématiquement oral/écrit.
 
-**Pour les élèves avancés** :
-- Utiliser les 5 bandes systématiquement
-- Créer leur propre thème
-- Produire des textes longs (dialogue, récit structuré)
-- Transformer les phrases (changement de temps, de personne)
+### Pistes d’évaluation
 
-**Pour les élèves allophones** :
-- Excellent outil pour travailler la structure de la phrase en français
-- Associer systématiquement l'oral et l'écrit
-- Partir de thèmes imagés (Animaux, École) avec vocabulaire illustré
+**Cycle 2 (observation)** :
 
-### Erreurs à éviter
+- L’élève sait-il repérer le début et la fin d’une phrase ?
+- Peut-il identifier le sujet et le verbe dans une phrase générée ?
+- Recopie-t-il correctement une phrase (majuscule, point, mots dans l’ordre) ?
 
-❌ Laisser les élèves cliquer sans réfléchir sur « Surprise » en boucle
-✅ Imposer un nombre limité de générations aléatoires, puis un choix argumenté
+**Cycle 3 (grille simple)** :
 
-❌ Ne pas expliciter la structure grammaticale sous-jacente
-✅ Systématiser les questions « Qui ? Fait quoi ? Quoi ? Où ? Quand ? »
-
-❌ Utiliser l'outil uniquement comme un jeu
-✅ L'intégrer dans des séquences d'apprentissage structurées (étude de la langue, production d'écrits)
-
-❌ Ne proposer que des thèmes prédéfinis
-✅ Co-construire des thèmes personnalisés en lien avec les projets de classe
+- Phrase générée correctement recopiée.
+- Sujet, verbe, compléments correctement identifiés.
+- Texte écrit cohérent avec la phrase de départ.
+- Respect des accords essentiels.
 
 ---
 
-## 📚 EXEMPLES DE SÉQUENCES COMPLÈTES
+## 8. En résumé
 
-### SÉQUENCE 1 : La phrase, qu'est-ce que c'est ? (CP - 4 séances)
+**Fabrique à Histoires** devient, avec ces choix de conception et cette fiche outil :
 
-**Objectif** : Comprendre la notion de phrase et identifier ses constituants
+- un **support structurant** pour la découverte et la maîtrise de la phrase simple ;
+- un **déclencheur efficace** pour la production d’écrits créatifs ;
+- un **outil de manipulation de la langue** compatible avec les exigences des programmes cycles 2 et 3 ;
+- un dispositif pensé pour **minimiser la charge cognitive inutile** et concentrer l’effort sur l’apprentissage.
 
-| Séance | Activité | Durée |
-|--------|----------|-------|
-| 1 | Découverte de l'application, génération de phrases, lecture collective | 30 min |
-| 2 | Identification des sujets (bande 1) : « Qui fait l'action ? » | 30 min |
-| 3 | Identification des verbes (bande 2) : « Que fait le sujet ? » | 30 min |
-| 4 | Recomposition de phrases à l'écrit, illustration | 45 min |
-
-**Évaluation** : Recopier une phrase générée et entourer le sujet en rouge, le verbe en bleu
-
----
-
-### SÉQUENCE 2 : Écrire un récit à partir d'une phrase-amorce (CE2 - 5 séances)
-
-**Objectif** : Produire un texte narratif cohérent
-
-| Séance | Activité | Durée |
-|--------|----------|-------|
-| 1 | Génération de phrases (thème Contes), sélection d'une phrase favorite | 30 min |
-| 2 | Rédaction du début du récit (situation initiale) | 45 min |
-| 3 | Suite du récit (péripéties) | 45 min |
-| 4 | Fin du récit et relecture | 45 min |
-| 5 | Correction, réécriture, illustration et présentation | 45 min |
-
-**Évaluation** : Grille de production d'écrits (cohérence, structure narrative, orthographe)
-
----
-
-### SÉQUENCE 3 : Les compléments de la phrase (CM1 - 6 séances)
-
-**Objectif** : Distinguer compléments essentiels et circonstanciels
-
-| Séance | Activité | Durée |
-|--------|----------|-------|
-| 1 | Observation de phrases générées : peut-on enlever des parties ? | 45 min |
-| 2 | Manipulation : suppression des bandes 4 et 5 → CC supprimables | 45 min |
-| 3 | Manipulation : suppression de la bande 3 → COD non supprimable | 45 min |
-| 4 | Déplacement des CC dans la phrase (réécritures) | 45 min |
-| 5 | Exercices d'entraînement (identifier et classer les compléments) | 45 min |
-| 6 | Évaluation sommative | 45 min |
-
----
-
-## 🌐 RESSOURCES COMPLÉMENTAIRES
-
-### Sitographie
-- **EDUSCOL** : Programmes et ressources d'accompagnement en français
-- **CANOPÉ** : Outils numériques pour la classe
-- **MiCetF.fr** : Site de l'auteur de Fabrique à Histoires (autres outils disponibles)
-
-### Pistes de prolongement
-- Créer des thèmes en lien avec l'EMC (émotions, vivre ensemble)
-- Associer avec des applications de dessins pour illustrer les phrases
-- Utiliser en APC pour les élèves en difficulté en production d'écrits
-- Proposer des défis « phrase du jour » à la maison (avec fichier HTML exporté)
-
----
-
-## ✅ EN RÉSUMÉ
-
-**Fabrique à Histoires** est bien plus qu'un simple générateur de phrases amusantes : c'est un **véritable outil didactique** pour :
-- Structurer la compréhension de la phrase simple
-- Favoriser la production d'écrits créatifs mais grammaticalement corrects
-- Manipuler la langue de manière ludique et réflexive
-- Différencier les apprentissages selon les niveaux
-
-**Points forts** :
-✓ Gratuit et sans collecte de données  
-✓ Utilisable en ligne et hors ligne  
-✓ Adaptable à tous les projets de classe  
-✓ Conforme aux programmes cycles 2 et 3  
-✓ Facile à prendre en main pour les élèves  
-
-**À vous de jouer !** Testez l'application, créez vos propres thèmes, et n'hésitez pas à partager vos usages avec vos collègues.
-
----
-
-**Fiche réalisée en février 2026**  
-**Conformément aux programmes en vigueur (BO 2024-2025)**  
-**Application développée par MiCetF - Frédéric MISERY**
+À utiliser autant pour « faire écrire » que pour « faire réfléchir sur la phrase ».

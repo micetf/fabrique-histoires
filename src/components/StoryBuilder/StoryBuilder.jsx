@@ -146,26 +146,30 @@ const StoryBuilder = () => {
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-4xl">
-            {/* ✅ Header supprimé - titre et sous-titre gérés par la Navbar */}
+            {/* Contrôles de configuration : Thème + Nombre de bandes */}
+            <div className="flex flex-col lg:flex-row gap-4 mb-6">
+                {/* Sélecteur de thème - occupe plus d'espace */}
+                <div className="flex-1">
+                    <ThemeSelector
+                        themes={allThemes}
+                        currentThemeId={currentThemeId}
+                        onThemeChange={handleThemeChange}
+                        onCreateNew={handleCreateNewTheme}
+                        onThemeDeleted={handleThemeDeleted}
+                        onThemeRenamed={handleThemeRenamed}
+                        onImportTheme={handleOpenImport}
+                    />
+                </div>
 
-            {/* Sélecteur de thème */}
-            <ThemeSelector
-                themes={allThemes}
-                currentThemeId={currentThemeId}
-                onThemeChange={handleThemeChange}
-                onCreateNew={handleCreateNewTheme}
-                onThemeDeleted={handleThemeDeleted}
-                onThemeRenamed={handleThemeRenamed}
-                onImportTheme={handleOpenImport}
-            />
-
-            {/* Sélecteur de nombre de bandes */}
-            <BandCountSelector
-                currentCount={bandCount}
-                onChange={changeBandCount}
-                maxBands={bandsContent.length}
-            />
-
+                {/* Sélecteur de nombre de bandes - plus compact */}
+                <div className="lg:w-auto">
+                    <BandCountSelector
+                        currentCount={bandCount}
+                        onChange={changeBandCount}
+                        maxBands={bandsContent.length}
+                    />
+                </div>
+            </div>
             {/* Aperçu de la phrase */}
             <StoryPreview sentence={getCurrentSentence} />
 
